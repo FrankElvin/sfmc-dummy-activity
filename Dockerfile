@@ -8,5 +8,5 @@ RUN gradle build --no-daemon
 # Run Stage
 FROM eclipse-temurin:21-jre-alpine
 EXPOSE 8080
-COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+COPY --from=build /home/gradle/src/build/libs/app.jar /app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
