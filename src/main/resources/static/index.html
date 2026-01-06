@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example Activity</title>
+    <style>
+        body { font-family: "Salesforce Sans", Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
+        p.description { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<h1>Example Activity</h1>
+<p class="description">Configure the parameters for this custom activity.</p>
+
+<div class="form-group">
+    <label for="custom-param">Manual Parameter:</label>
+    <input type="text" id="custom-param" placeholder="Enter a value...">
+</div>
+
+<!-- Postmonger is required for SFMC communication -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="js/customActivity.js"></script>
+</body>
+</html>
