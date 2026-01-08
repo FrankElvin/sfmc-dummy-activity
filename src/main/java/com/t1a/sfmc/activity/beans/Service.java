@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -14,7 +15,7 @@ public class Service {
 
     private OauthConfig oauthConfig;
 
-    public void addSecurityOptions(Map<String, Object> config) {
+    private void addSecurityOptions(Map<String, Object> config) {
         if (!oauthConfig.isEnabled()) {
             return;
         }
@@ -25,5 +26,21 @@ public class Service {
                         "securityContextKey", oauthConfig.getContextKey()
                 )
         );
+    }
+
+    public Map<String, Object> buildExecuteArgument(String baseUrl) {
+        Map<String, Object> result = new HashMap<>( Map.of(
+            "inArguments", new Object[]{},
+            "outArguments", new Object[]{},
+            "url", baseUrl + "/execute",
+            "verb", "POST",
+            "body", "",
+            "header", "",
+            "format", "json",
+            "useJwt", false, // Set to true if you implement JWT decoding
+            "timeout", 10000
+        ));
+        addSecurityOptions(result);
+        return result;
     }
 }

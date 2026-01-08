@@ -41,17 +41,7 @@ public class Controller {
                         )
                 ),
                 "arguments", Map.of(
-                        "execute", Map.of(
-                                "inArguments", new Object[]{},
-                                "outArguments", new Object[]{},
-                                "url", baseUrl + "/execute",
-                                "verb", "POST",
-                                "body", "",
-                                "header", "",
-                                "format", "json",
-                                "useJwt", false, // Set to true if you implement JWT decoding
-                                "timeout", 10000
-                        )
+                        "execute", service.buildExecuteArgument(baseUrl)
                 ),
                 "configurationArguments", Map.of(
                         "save", Map.of("url", baseUrl + "/save", "verb", "POST"),
@@ -61,7 +51,6 @@ public class Controller {
                 )
         ));
 
-        service.addSecurityOptions(config);
         return config;
     }
 
