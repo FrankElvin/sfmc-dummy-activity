@@ -1,10 +1,34 @@
 var connection = new Postmonger.Session();
 var payload = {};
 
+const dataExtensionFound = '#data-extension-schema-found';
+const dataExtensionFieldList = '#data-extension-field-list';
+
 $(window).ready(function() {
     connection.trigger('ready');
     connection.trigger('requestTokens');
     connection.trigger('requestEndpoints');
+});
+
+function extractFieldName(field) {
+    let index = field.key.lastIndexOf('.');
+    return field.key.substring(index + 1);
+}
+
+connection.on('requestedSchema', function(data) {
+    schema = data['schema'];
+
+    let schemaPresent = schema !== undefined && schema.length > 0;
+    ${dataExtensionFound}.toggle(schemaPresent);
+    if (!schemaPresent) {
+        return;
+    }
+
+    for (let i in schema) {
+        let field = schema[i];
+        let fieldName = extractFieldName(field);
+        ${dataExtensionFieldList}.append('<li>%' + fieldName + '%</li>');
+    }
 });
 
 connection.on('initActivity', function(data) {
