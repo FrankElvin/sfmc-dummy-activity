@@ -1,0 +1,9 @@
+
+
+app:
+  security:
+    oauth:
+      # add security to the generated config.json
+      enabled: "${SFMC_OAUTH_ENABLED}"
+      # SFMC security context key where the oauth token endpoint is defined
+      contextKey: "${SFMC_OAUTH_CONTEXT_KEY}"

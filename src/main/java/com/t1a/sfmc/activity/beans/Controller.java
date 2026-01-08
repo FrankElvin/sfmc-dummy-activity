@@ -1,15 +1,20 @@
 package com.t1a.sfmc.activity.beans;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @CrossOrigin
 @Slf4j
+@AllArgsConstructor
 public class Controller {
+
+    private Service service;
 
     @GetMapping("/config.json")
     public Map<String, Object> getConfig() {
@@ -17,7 +22,8 @@ public class Controller {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         log.info("Calculated base url: {}", baseUrl);
 
-        return Map.of(
+
+        Map<String, Object> config = new HashMap<>(Map.of(
                 "workflowApiVersion", "1.1",
                 "metaData", Map.of(
                         "icon", "images/icon.png",
@@ -53,7 +59,10 @@ public class Controller {
                         "validate", Map.of("url", baseUrl + "/validate", "verb", "POST"),
                         "stop", Map.of("url", baseUrl + "/stop", "verb", "POST")
                 )
-        );
+        ));
+
+        service.addSecurityOptions(config);
+        return config;
     }
 
     // --- Lifecycle Endpoints ---
