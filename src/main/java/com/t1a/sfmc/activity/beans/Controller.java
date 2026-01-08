@@ -20,7 +20,8 @@ public class Controller {
         return Map.of(
                 "workflowApiVersion", "1.1",
                 "metaData", Map.of(
-                        "icon", "images/icon.png", // You can add an icon.png to static/images if you want
+                        "icon", "images/icon.png",
+                        "iconSmall", "images/icon-small.png",
                         "category", "Custom"
                 ),
                 "type", "REST",
