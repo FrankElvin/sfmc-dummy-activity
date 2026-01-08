@@ -19,7 +19,7 @@ connection.on('requestedSchema', function(data) {
     schema = data['schema'];
 
     let schemaPresent = schema !== undefined && schema.length > 0;
-    ${dataExtensionFound}.toggle(schemaPresent);
+    $(dataExtensionFound).toggle(schemaPresent);
     if (!schemaPresent) {
         return;
     }
@@ -27,7 +27,7 @@ connection.on('requestedSchema', function(data) {
     for (let i in schema) {
         let field = schema[i];
         let fieldName = extractFieldName(field);
-        ${dataExtensionFieldList}.append('<li>%' + fieldName + '%</li>');
+        $(dataExtensionFieldList).append('<li>%' + fieldName + '%</li>');
     }
 });
 
