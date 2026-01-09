@@ -34,8 +34,8 @@ public class Controller {
                 "lang", "en-US",
                 "userInterfaces", Map.of(
                         "configModal", Map.of(
-                                "height", 400,
-                                "width", 600,
+                                "height", 500,
+                                "width", 800,
                                 "fullscreen", false,
                                 "url", baseUrl + "/index.html"
                         )

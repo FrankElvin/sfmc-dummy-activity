@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -31,7 +32,10 @@ public class Service {
     public Map<String, Object> buildExecuteArgument(String baseUrl) {
         Map<String, Object> result = new HashMap<>( Map.of(
             "inArguments", new Object[]{},
-            "outArguments", new Object[]{},
+            "outArguments", List.of(
+                    Map.of("processedMessage", "Text"),
+                    Map.of("status", "Text")
+                ),
             "url", baseUrl + "/execute",
             "verb", "POST",
             "body", "",

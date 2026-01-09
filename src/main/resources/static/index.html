@@ -4,24 +4,41 @@
     <meta charset="UTF-8">
     <title>Example Activity</title>
     <style>
-        body { font-family: "Salesforce Sans", Arial, sans-serif; padding: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
-        p.description { color: #666; font-size: 0.9em; }
+        body { padding: 15px; background-color: #fff; }
+        .container { display: flex; gap: 20px; }
+        .left-col { width: 30%; border-right: 1px solid #ddd; padding-right: 15px; }
+        .right-col { width: 70%; }
+
+        .field-chip {
+            display: block;
+            background: #f3f2f2;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #e1e1e1;
+        }
+        .field-chip:hover { background-color: #0176d3; color: white; }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 <h1>Example Activity</h1>
 <p class="description">Configure the parameters for this custom activity.</p>
 
-<div class="debug-data">
-    <div id="data-extension-details">
-        <div id="data-extension-schema-found">Data extension schema found!</div>
-        <div>
-            <span>DE fields:</span>
-            <ul id="data-extension-field-list"></ul>
-        </div>
+<!-- 1. Widget showing fields -->
+<div class="left-col">
+    <div class="slds-text-heading_small slds-m-bottom_small">Available Fields</div>
+    <div id="field-list">
+        <p style="color:#888;">Loading schema...</p>
     </div>
 </div>
 
