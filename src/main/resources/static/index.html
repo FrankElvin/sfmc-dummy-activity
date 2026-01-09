@@ -34,12 +34,26 @@
 <h1>Example Activity</h1>
 <p class="description">Configure the parameters for this custom activity.</p>
 
-<!-- 1. Widget showing fields -->
-<div class="left-col">
-    <div class="slds-text-heading_small slds-m-bottom_small">Available Fields</div>
-    <div id="field-list">
-        <p style="color:#888;">Loading schema...</p>
+<div class="container">
+    <!-- 1. Widget showing fields -->
+    <div class="left-col">
+        <div class="slds-text-heading_small slds-m-bottom_small">Available Fields</div>
+        <div id="field-list">
+            <p style="color:#888;">Loading schema...</p>
+        </div>
     </div>
+
+    <!-- 2. Message Template -->
+    <div class="right-col">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="message-template">Message Template</label>
+            <div class="slds-form-element__control">
+                <textarea id="message-template" placeholder="Hello {{FirstName}}, welcome to..."></textarea>
+            </div>
+            <p class="slds-form-element__help">Click a field on the left to insert it.</p>
+        </div>
+    </div>
+
 </div>
 
 <div class="form-group">
