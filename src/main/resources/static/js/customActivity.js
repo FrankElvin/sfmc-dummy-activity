@@ -11,11 +11,16 @@ $(window).ready(function() {
 });
 
 function extractFieldName(field) {
+    console.log('Field name requested');
+
     let index = field.key.lastIndexOf('.');
     return field.key.substring(index + 1);
 }
 
 connection.on('requestedSchema', function(data) {
+    console.log('schema requested');
+    console.log(data);
+
     schema = data['schema'];
 
     let schemaPresent = schema !== undefined && schema.length > 0;
