@@ -48,7 +48,7 @@ function insertAtCursor(text) {
     var $txt = $("#message-template");
     var caretPos = $txt[0].selectionStart;
     var textAreaTxt = $txt.val();
-    var txtToAdd = "{{" + text + "}}";
+    var txtToAdd = "[[" + text + "]]";
 
     $txt.val(textAreaTxt.substring(0, caretPos) + txtToAdd + textAreaTxt.substring(caretPos) );
     $txt.focus();

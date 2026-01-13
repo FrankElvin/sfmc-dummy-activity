@@ -1,5 +1,6 @@
 package com.t1a.sfmc.activity.beans;
 
+import com.t1a.sfmc.activity.model.sfmc.SfmcJourneyPayload;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class Controller {
         log.info("Calculated base url: {}", baseUrl);
 
 
-        Map<String, Object> config = new HashMap<>(Map.of(
+        return new HashMap<>(Map.of(
                 "workflowApiVersion", "1.1",
                 "metaData", Map.of(
                         "icon", "images/icon.png",
@@ -50,19 +51,18 @@ public class Controller {
                         "stop", Map.of("url", baseUrl + "/stop", "verb", "POST")
                 )
         ));
-
-        return config;
     }
 
     // --- Lifecycle Endpoints ---
 
     @PostMapping("/execute")
-    public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
+    public Map<String, String> execute(@RequestBody SfmcJourneyPayload payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Headers: {}", headers);
         log.info("Payload: {}", payload);
 
-        // In a real scenario, you might parse "inArguments" here
+        String outMessage = service.personalizeTemplateFromMessage(payload);
+
         return Map.of("status", "ok");
     }
 
