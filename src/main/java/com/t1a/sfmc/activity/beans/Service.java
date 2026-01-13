@@ -71,7 +71,6 @@ public class Service {
             }
         }
         log.info("Personalization result: {}", processedMessage);
-        log.info("Initial: {}", template);
         return processedMessage;
 
     }
