@@ -57,7 +57,7 @@ public class Controller {
     // --- Lifecycle Endpoints ---
 
     @PostMapping("/execute")
-    public Map<String, String> execute(@RequestBody Map<String, Object> payload, @RequestHeader Map<String, String> headers) {
+    public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Headers: {}", headers);
         log.info("Payload: {}", payload);
