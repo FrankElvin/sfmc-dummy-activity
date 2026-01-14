@@ -2,6 +2,7 @@ var connection = new Postmonger.Session();
 var payload = {};
 var schemaFields = [];
 var eventDefinitionKey = '';
+var journeyMeta = {};
 
 $(window).ready(function() {
     connection.trigger('ready');
@@ -9,7 +10,10 @@ $(window).ready(function() {
     connection.trigger('requestEndpoints');
 
     // to request schema entry source
-    connection.trigger('requestSchema')
+    connection.trigger('requestSchema');
+
+    // to request journey details
+    connection.trigger('requestInteraction');
 });
 
 // Helper: Render fields to UI
@@ -54,7 +58,6 @@ function insertAtCursor(text) {
     $txt.focus();
 }
 
-
 connection.on('requestedSchema', function(data) {
     console.log('schema requested');
     console.log(data);
@@ -73,6 +76,27 @@ connection.on('requestedSchema', function(data) {
 
     schemaFields = fields; // Save for later use in 'save()'
     renderFields(fields);
+});
+
+connection.on('requestedInteraction', function(interaction) {
+    // 'interaction' contains the full JSON definition of the Journey
+    console.log("Journey Details:", interaction);
+
+    journeyMeta.journeyName = interaction.name;
+    journeyMeta.journeyVersion = interaction.version;
+    journeyMeta.journeyKey = interaction.key;
+
+    // To find the specific name (label) of THIS activity, we need to match the key
+    // The current activity key is available in the global 'payload' object after initActivity
+    if (payload && payload.key) {
+        var currentActivity = interaction.activities.find(function(act) {
+            return act.key === payload.key;
+        });
+
+        if (currentActivity) {
+            journeyMeta.activityLabel = currentActivity.name; // The text shown on canvas
+        }
+    }
 });
 
 connection.on('initActivity', function(data) {
@@ -129,6 +153,14 @@ connection.on('clickedNext', function() {
         obj[fieldName] = value;
         dynamicInArguments.push(obj);
     });
+
+    dynamicInArguments.push({ "_journeyName": journeyMeta.journeyName || "Unknown" });
+    dynamicInArguments.push({ "_journeyVersion": journeyMeta.journeyVersion || "1" });
+    dynamicInArguments.push({ "_journeyKey": journeyMeta.journeyKey || "" });
+
+    // Try to get the label one last time in case of race conditions
+    var activityLabel = journeyMeta.activityLabel || "Custom Activity";
+    dynamicInArguments.push({ "_activityLabel": activityLabel });
 
     // Update Payload
     payload['arguments'].execute.inArguments = dynamicInArguments;
