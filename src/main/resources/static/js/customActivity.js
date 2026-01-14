@@ -85,18 +85,6 @@ connection.on('requestedInteraction', function(interaction) {
     journeyMeta.journeyName = interaction.name;
     journeyMeta.journeyVersion = interaction.version;
     journeyMeta.journeyKey = interaction.key;
-
-    // To find the specific name (label) of THIS activity, we need to match the key
-    // The current activity key is available in the global 'payload' object after initActivity
-    if (payload && payload.key) {
-        var currentActivity = interaction.activities.find(function(act) {
-            return act.key === payload.key;
-        });
-
-        if (currentActivity) {
-            journeyMeta.activityLabel = currentActivity.name; // The text shown on canvas
-        }
-    }
 });
 
 connection.on('initActivity', function(data) {
@@ -157,10 +145,6 @@ connection.on('clickedNext', function() {
     dynamicInArguments.push({ "_journeyName": journeyMeta.journeyName || "Unknown" });
     dynamicInArguments.push({ "_journeyVersion": journeyMeta.journeyVersion || "1" });
     dynamicInArguments.push({ "_journeyKey": journeyMeta.journeyKey || "" });
-
-    // Try to get the label one last time in case of race conditions
-    var activityLabel = journeyMeta.activityLabel || "Custom Activity";
-    dynamicInArguments.push({ "_activityLabel": activityLabel });
 
     // Update Payload
     payload['arguments'].execute.inArguments = dynamicInArguments;
