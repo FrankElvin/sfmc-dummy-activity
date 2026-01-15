@@ -135,7 +135,9 @@ function goToStep(step) {
             connection.trigger('updateButton', { button: 'next', text: 'done', visible: true });
             connection.trigger('updateButton', { button: 'back', visible: true });
         }
-    }, 1000); // 100ms delay gives SFMC time to finish its "loading" animation
+    }, 100); // 100ms delay gives SFMC time to finish its "loading" animation
+
+    connection.trigger('ready');
 }
 
 function validateStep1() {
