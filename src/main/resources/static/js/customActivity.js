@@ -109,6 +109,13 @@ connection.on('clickedBack', function() {
 
 // --- FUNCTIONS ---
 
+function buildArgument(key, value) {
+    return {
+        "name": key,
+        "value": value
+    };
+}
+
 function goToStep(step) {
     currentStep = step;
     $('.step-container').removeClass('active');
@@ -272,16 +279,16 @@ function save() {
     var inArgs = [];
 
     // 1. Channel
-    inArgs.push({ "channel": selectedChannel });
+    inArgs.push(buildArgument("channel", selectedChannel));
 
     // 2. Common Fields
     var rawTemplate = $('#msg-template').val();
-    inArgs.push({ "messageTemplate": encodeTags(rawTemplate) });
+    inArgs.push(buildArgument("messageTemplate", encodeTags(rawTemplate)));
 
     // 3. Conditional Fields
     if (selectedChannel === 'push') {
         var rawTitle = $('#msg-title').val();
-        inArgs.push({ "messageTitle": encodeTags(rawTitle) });
+        inArgs.push(buildArgument("messageTitle", encodeTags(rawTitle)));
     }
 
     if (selectedChannel === 'viber' || selectedChannel === 'push') {
@@ -291,7 +298,7 @@ function save() {
             var val = $(this).val();
             if(val) images.push(val);
         });
-        inArgs.push({ "images": images }); // Backend will receive List<String>
+        inArgs.push(buildArgument("images", images)); // Backend will receive List<String>
 
         // Collect Buttons
         var buttons = [];
@@ -303,20 +310,21 @@ function save() {
                 track: $row.find('.btn-track').is(':checked')
             });
         });
-        inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
+        inArgs.push(buildArgument("buttons", buttons));
+        //inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
     }
 
     // 4. Schema Mapping (Data Binding)
     // We add all available schema fields to inArguments so SFMC resolves them if used in {{ }}
     $.each(schemaFields, function(i, field) {
-        var obj = {};
-        obj[field.name] = "{{" + field.key + "}}";
-        inArgs.push(obj);
+        //var obj = {};
+        //obj[field.name] = "{{" + field.key + "}}";
+        inArgs.push(buildArgument(field.name, field.key));
     });
 
     // 5. Metadata
-    if (journeyMeta.journeyName) inArgs.push({ "_journeyName": journeyMeta.journeyName });
-    if (journeyMeta.journeyVersion) inArgs.push({ "_journeyVersion": journeyMeta.journeyVersion });
+    if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", journeyMeta.journeyName));
+    if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", journeyMeta.journeyVersion));
 
     // UPDATE PAYLOAD
     payload['arguments'].execute.inArguments = inArgs;
