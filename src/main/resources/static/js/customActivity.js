@@ -110,10 +110,12 @@ connection.on('clickedBack', function() {
 // --- FUNCTIONS ---
 
 function buildArgument(key, value) {
-    return {
-        "name": key,
-        "value": value
-    };
+    var result = {};
+    result.name = key;
+    result.value = value;
+    console.log("Argument built");
+    console.log(result);
+    return result;
 }
 
 function goToStep(step) {
@@ -329,6 +331,9 @@ function save() {
     // UPDATE PAYLOAD
     payload['arguments'].execute.inArguments = inArgs;
     payload['metaData'].isConfigured = true;
+
+    console.log("Returning payload");
+    console.log(payload);
 
     connection.trigger('updateActivity', payload);
 }
