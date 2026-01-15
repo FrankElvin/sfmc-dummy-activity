@@ -135,7 +135,7 @@ function goToStep(step) {
             connection.trigger('updateButton', { button: 'next', text: 'done', visible: true });
             connection.trigger('updateButton', { button: 'back', visible: true });
         }
-    }, 100); // 100ms delay gives SFMC time to finish its "loading" animation
+    }, 1000); // 100ms delay gives SFMC time to finish its "loading" animation
 }
 
 function validateStep1() {
@@ -333,6 +333,11 @@ function save() {
     // UPDATE PAYLOAD
     payload['arguments'].execute.inArguments = inArgs;
     payload['metaData'].isConfigured = true;
+    // add security options
+    payload['arguments'].execute.securityOptions = {
+        "securityContextKey": "inecobank-wso2-oauth-kong-test",
+        "securityType": "securityContext"
+    };
 
     console.log("Returning payload");
     console.log(payload);
