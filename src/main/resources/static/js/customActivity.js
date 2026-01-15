@@ -109,12 +109,23 @@ connection.on('clickedBack', function() {
 
 // --- FUNCTIONS ---
 
-function buildArgument(key, value) {
-    var result = {};
-    result.name = key;
-    result.value = value;
-    console.log("Argument built");
-    console.log(result);
+function buildArgument(key, value, type) {
+    var result = {
+        "name": key,
+        "value": {}
+    };
+    switch (type) {
+        case 'images':
+            result.value.urls = value;
+            break;
+        case 'buttons':
+            result.value.buttons = value;
+            break;
+        case 'plain':
+        default:
+            result.value.plain = value;
+            break;
+    }
     return result;
 }
 
@@ -269,17 +280,7 @@ function insertAtCursor(text) {
     $input.focus();
 }
 
-// --- SAVE / ENCODING ---
-
-function encodeTags(str) {
-    if(!str) return "";
-    return str.replace(/{{/g, '[[').replace(/}}/g, ']]');
-}
-
-function decodeTags(str) {
-    if(!str) return "";
-    return str.replace(/\[\[/g, '{{').replace(/\]\]/g, '}}');
-}
+// --- SAVING ---
 
 function save() {
     var inArgs = [];
@@ -304,7 +305,7 @@ function save() {
             var val = $(this).val();
             if(val) images.push(val);
         });
-        inArgs.push(buildArgument("images", images)); // Backend will receive List<String>
+        inArgs.push(buildArgument("images", images, "images")); // Backend will receive List<String>
 
         // Collect Buttons
         var buttons = [];
@@ -316,7 +317,7 @@ function save() {
                 track: $row.find('.btn-track').is(':checked')
             });
         });
-        inArgs.push(buildArgument("buttons", buttons));
+        inArgs.push(buildArgument("buttons", buttons, "buttons"));
         //inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
     }
 
@@ -340,10 +341,6 @@ function save() {
         "securityContextKey": "inecobank-wso2-oauth-kong-test",
         "securityType": "securityContext"
     };
-
-    console.log("Returning payload");
-    console.log(payload);
-    console.log(payload.arguments.execute);
 
     connection.trigger('updateActivity', payload);
 }
