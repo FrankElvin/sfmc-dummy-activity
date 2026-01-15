@@ -56,12 +56,12 @@ public class Controller {
     // --- Lifecycle Endpoints ---
 
     @PostMapping("/execute")
-    public Map<String, String> execute(@RequestBody SfmcJourneyPayload payload, @RequestHeader Map<String, String> headers) {
+    public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Headers: {}", headers);
         log.info("Payload: {}", payload);
 
-        String outMessage = service.personalizeTemplateFromMessage(payload);
+//        String outMessage = service.personalizeTemplateFromMessage(payload);
 
         return Map.of("status", "ok");
     }
