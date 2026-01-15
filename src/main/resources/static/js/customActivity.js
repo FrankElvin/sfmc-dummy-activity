@@ -62,8 +62,8 @@ connection.on('initActivity', function(data) {
     }
 
     // 2. Restore Fields (Decoding [[ ]] back to {{ }})
-    if (config.messageTitle) $('#msg-title').val(decodeTags(config.messageTitle));
-    if (config.messageTemplate) $('#msg-template').val(decodeTags(config.messageTemplate));
+    if (config.messageTitle) $('#msg-title').val(config.messageTitle);
+    if (config.messageTemplate) $('#msg-template').val(config.messageTemplate);
 
     // 3. Restore Images
     if (config.images) {
@@ -123,17 +123,19 @@ function goToStep(step) {
     $('.step-container').removeClass('active');
     $('#step' + step).addClass('active');
 
-    if (step === 1) {
-        // UI: Show "Next", Hide "Back"
-        connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: true });
-        connection.trigger('updateButton', { button: 'back', visible: false });
-    } else {
-        // Setup Step 2 UI based on Channel
-        setupStep2UI();
-        // UI: Show "Done", Show "Back"
-        connection.trigger('updateButton', { button: 'next', text: 'done', visible: true });
-        connection.trigger('updateButton', { button: 'back', visible: true });
-    }
+    setTimeout(function() {
+        if (step === 1) {
+            // UI: Show "Next", Hide "Back"
+            connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: true });
+            connection.trigger('updateButton', { button: 'back', visible: false });
+        } else {
+            // Setup Step 2 UI based on Channel
+            setupStep2UI();
+            // UI: Show "Done", Show "Back"
+            connection.trigger('updateButton', { button: 'next', text: 'done', visible: true });
+            connection.trigger('updateButton', { button: 'back', visible: true });
+        }
+    }, 100); // 100ms delay gives SFMC time to finish its "loading" animation
 }
 
 function validateStep1() {
@@ -260,7 +262,7 @@ function insertAtCursor(text) {
     var start = $input[0].selectionStart || currentVal.length;
     var end = $input[0].selectionEnd || currentVal.length;
 
-    var txtToAdd = "{{" + text + "}}";
+    var txtToAdd = "[[" + text + "]]";
     $input.val(currentVal.substring(0, start) + txtToAdd + currentVal.substring(end));
     $input.focus();
 }
@@ -285,12 +287,12 @@ function save() {
 
     // 2. Common Fields
     var rawTemplate = $('#msg-template').val();
-    inArgs.push(buildArgument("messageTemplate", encodeTags(rawTemplate)));
+    inArgs.push(buildArgument("messageTemplate", rawTemplate));
 
     // 3. Conditional Fields
     if (selectedChannel === 'push') {
         var rawTitle = $('#msg-title').val();
-        inArgs.push(buildArgument("messageTitle", encodeTags(rawTitle)));
+        inArgs.push(buildArgument("messageTitle", rawTitle));
     }
 
     if (selectedChannel === 'viber' || selectedChannel === 'push') {
@@ -307,8 +309,8 @@ function save() {
         $('.button-row').each(function() {
             var $row = $(this);
             buttons.push({
-                title: encodeTags($row.find('.btn-title').val()),
-                url: encodeTags($row.find('.btn-url').val()),
+                title: $row.find('.btn-title').val(),
+                url: $row.find('.btn-url').val(),
                 track: $row.find('.btn-track').is(':checked')
             });
         });
@@ -321,7 +323,7 @@ function save() {
     $.each(schemaFields, function(i, field) {
         //var obj = {};
         //obj[field.name] = "{{" + field.key + "}}";
-        inArgs.push(buildArgument(field.name, field.key));
+        inArgs.push(buildArgument(field.name, "{{" + field.key + "}}"));
     });
 
     // 5. Metadata
@@ -334,6 +336,7 @@ function save() {
 
     console.log("Returning payload");
     console.log(payload);
+    console.log(payload.arguments.execute);
 
     connection.trigger('updateActivity', payload);
 }
