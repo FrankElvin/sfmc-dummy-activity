@@ -109,23 +109,12 @@ connection.on('clickedBack', function() {
 
 // --- FUNCTIONS ---
 
-function buildArgument(key, value, type) {
+function buildArgument(key, type, value) {
     var result = {
         "name": key,
-        "value": {}
+        "type": type,
+        "value": value
     };
-    switch (type) {
-        case 'images':
-            result.value.urls = value;
-            break;
-        case 'buttons':
-            result.value.buttons = value;
-            break;
-        case 'plain':
-        default:
-            result.value.plain = value;
-            break;
-    }
     return result;
 }
 
@@ -286,16 +275,16 @@ function save() {
     var inArgs = [];
 
     // 1. Channel
-    inArgs.push(buildArgument("channel", selectedChannel));
+    inArgs.push(buildArgument("channel", "plain", selectedChannel));
 
     // 2. Common Fields
     var rawTemplate = $('#msg-template').val();
-    inArgs.push(buildArgument("messageTemplate", rawTemplate));
+    inArgs.push(buildArgument("messageTemplate", "plain", rawTemplate));
 
     // 3. Conditional Fields
     if (selectedChannel === 'push') {
         var rawTitle = $('#msg-title').val();
-        inArgs.push(buildArgument("messageTitle", rawTitle));
+        inArgs.push(buildArgument("messageTitle", "plain", rawTitle));
     }
 
     if (selectedChannel === 'viber' || selectedChannel === 'push') {
@@ -305,7 +294,7 @@ function save() {
             var val = $(this).val();
             if(val) images.push(val);
         });
-        inArgs.push(buildArgument("images", images, "images")); // Backend will receive List<String>
+        inArgs.push(buildArgument("images", "images", images)); // Backend will receive List<String>
 
         // Collect Buttons
         var buttons = [];
@@ -317,7 +306,7 @@ function save() {
                 track: $row.find('.btn-track').is(':checked')
             });
         });
-        inArgs.push(buildArgument("buttons", buttons, "buttons"));
+        inArgs.push(buildArgument("buttons", "buttons", buttons));
         //inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
     }
 
@@ -326,12 +315,12 @@ function save() {
     $.each(schemaFields, function(i, field) {
         //var obj = {};
         //obj[field.name] = "{{" + field.key + "}}";
-        inArgs.push(buildArgument(field.name, "{{" + field.key + "}}"));
+        inArgs.push(buildArgument(field.name, "plain", "{{" + field.key + "}}"));
     });
 
     // 5. Metadata
-    if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", journeyMeta.journeyName));
-    if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", journeyMeta.journeyVersion));
+    if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", "plain", journeyMeta.journeyName));
+    if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", "plain", journeyMeta.journeyVersion));
 
     // UPDATE PAYLOAD
     payload['arguments'].execute.inArguments = inArgs;
