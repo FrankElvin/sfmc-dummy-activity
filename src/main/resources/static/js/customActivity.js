@@ -8,28 +8,6 @@ var currentStep = 1;
 var selectedChannel = "";
 var lastFocusedElement = null; // To know where to insert {{Field}}
 
-$(window).ready(function() {
-    connection.trigger('ready');
-    connection.trigger('requestTokens');
-    connection.trigger('requestEndpoints');
-    connection.trigger('requestSchema');
-    connection.trigger('requestInteraction');
-
-    // Default UI state
-    $('#channel-select').change(validateStep1);
-
-    // Track focus for variable injection
-    $(document).on('focus', '.inject-target', function() {
-        lastFocusedElement = $(this);
-    });
-
-    // Add Image Logic
-    $('#btn-add-image').click(function() { addImageRow(""); });
-
-    // Add Button Logic
-    $('#btn-add-button').click(function() { addButtonRow({}); });
-});
-
 // --- POSTMONGER LISTENERS ---
 
 connection.on('requestedSchema', function(data) {
@@ -274,6 +252,8 @@ function insertAtCursor(text) {
 function save() {
     var inArgs = [];
 
+    console.log("Saving data. Payload before: ", payload);
+
     // 1. Channel
     inArgs.push(buildArgument("channel", "plain", selectedChannel));
 
@@ -331,5 +311,31 @@ function save() {
         "securityType": "securityContext"
     };
 
+    console.log("Saving data. Payload after: ", payload);
+
     connection.trigger('updateActivity', payload);
 }
+
+// --- INITIALIZATION ---
+
+$(window).ready(function() {
+    connection.trigger('ready');
+    connection.trigger('requestTokens');
+    connection.trigger('requestEndpoints');
+    connection.trigger('requestSchema');
+    connection.trigger('requestInteraction');
+
+    // Default UI state
+    $('#channel-select').change(validateStep1);
+
+    // Track focus for variable injection
+    $(document).on('focus', '.inject-target', function() {
+        lastFocusedElement = $(this);
+    });
+
+    // Add Image Logic
+    $('#btn-add-image').click(function() { addImageRow(""); });
+
+    // Add Button Logic
+    $('#btn-add-button').click(function() { addButtonRow({}); });
+});
