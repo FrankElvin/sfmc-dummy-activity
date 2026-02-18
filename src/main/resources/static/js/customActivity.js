@@ -256,7 +256,7 @@ function insertAtCursor(text) {
 function save() {
     var inArgs = [];
 
-    console.log("Saving data. Payload before: ", payload);
+    console.log("Saving data. Payload before: ", JSON.stringify(payload, null, 2));
 
     // 1. Channel
     inArgs.push(buildArgument("channel", "plain", selectedChannel));
@@ -319,7 +319,7 @@ function save() {
         "securityType": "securityContext"
     };
 
-    console.log("Saving data. Payload after: ", payload);
+    console.log("Saving data. Payload after: ", JSON.stringify(payload, null, 2));
 
     connection.trigger('updateActivity', payload);
 }
