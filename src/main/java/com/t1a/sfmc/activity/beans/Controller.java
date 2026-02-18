@@ -17,6 +17,10 @@ public class Controller {
 
     private Service service;
 
+    private void logHeaders(Map<String, String> headers) {
+        log.info("Headers: {}", headers);
+    }
+
     @GetMapping("/config.json")
     public Map<String, Object> getConfig() {
         log.info("/config.json method executed");
@@ -58,35 +62,42 @@ public class Controller {
     @PostMapping("/execute")
     public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> EXECUTE REQUEST RECEIVED");
-        log.info("Headers: {}", headers);
         log.info("Payload: {}", payload);
+        logHeaders(headers);
 
 //        String outMessage = service.personalizeTemplateFromMessage(payload);
-
         return Map.of("status", "ok");
     }
 
     @PostMapping("/save")
-    public Map<String, String> save(@RequestBody Map<String, Object> payload) {
+    public Map<String, String> save(@RequestBody Map<String, Object> payload,
+                                    @RequestHeader Map<String, String> headers) {
         log.info(">>> SAVE REQUEST: {}", payload);
+        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
     @PostMapping("/publish")
-    public Map<String, String> publish(@RequestBody Map<String, Object> payload) {
+    public Map<String, String> publish(@RequestBody Map<String, Object> payload,
+                                       @RequestHeader Map<String, String> headers) {
         log.info(">>> PUBLISH REQUEST: {}", payload);
+        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
     @PostMapping("/validate")
-    public Map<String, String> validate(@RequestBody Map<String, Object> payload) {
+    public Map<String, String> validate(@RequestBody Map<String, Object> payload,
+                                        @RequestHeader Map<String, String> headers) {
         log.info(">>> VALIDATE REQUEST: {}", payload);
+        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
     @PostMapping("/stop")
-    public Map<String, String> stop(@RequestBody Map<String, Object> payload) {
+    public Map<String, String> stop(@RequestBody Map<String, Object> payload,
+                                    @RequestHeader Map<String, String> headers) {
         log.info(">>> STOP REQUEST: {}", payload);
+        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
