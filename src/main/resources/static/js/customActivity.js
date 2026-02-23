@@ -26,7 +26,6 @@ connection.on('initActivity', function(data) {
 
     // Parse existing configuration
     var inArgs = [];
-    // in case arguments are not loaded from activity endpoint
     if (payload['arguments'] && payload['arguments'].execute && payload['arguments'].execute.inArguments) {
         inArgs = payload['arguments'].execute.inArguments;
     }
@@ -306,11 +305,10 @@ function save() {
     if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", "plain", journeyMeta.journeyName));
     if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", "plain", journeyMeta.journeyVersion));
 
-    // in case arguments are not loaded
+    // UPDATE PAYLOAD
     if (!payload['arguments']) payload['arguments'] = {};
     if (!payload['arguments'].execute) payload['arguments'].execute = {};
 
-    // UPDATE PAYLOAD
     payload['arguments'].execute.inArguments = inArgs;
     payload['metaData'].isConfigured = true;
     // add security options
