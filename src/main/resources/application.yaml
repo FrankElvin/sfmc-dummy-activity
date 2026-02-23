@@ -1,6 +1,8 @@
 
 
 app:
+  url:
+    execute: "${EXECUTION_URL}"
   security:
     oauth:
       # add security to the generated config.json

@@ -1,5 +1,6 @@
 package com.t1a.sfmc.activity.beans;
 
+import com.t1a.sfmc.activity.config.UrlConfig;
 import com.t1a.sfmc.activity.model.sfmc.SfmcJourneyPayload;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class Controller {
 
     private Service service;
+    private UrlConfig urlConfig;
 
     private void logHeaders(Map<String, String> headers) {
         log.info("Headers: {}", headers);
@@ -46,7 +48,7 @@ public class Controller {
                         )
                 ),
                 "arguments", Map.of(
-                        "execute", service.buildExecuteArgument(baseUrl)
+                        "execute", service.buildExecuteArgument(urlConfig.getExecute())
                 ),
                 "configurationArguments", Map.of(
                         "save", Map.of("url", baseUrl + "/save", "verb", "POST"),
@@ -64,8 +66,15 @@ public class Controller {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Payload: {}", payload);
         logHeaders(headers);
+        return Map.of("status", "ok");
+    }
 
-//        String outMessage = service.personalizeTemplateFromMessage(payload);
+    @PostMapping("/execute-debug")
+    public Map<String, String> executeDebug(@RequestBody String journeyPayload,
+                                       @RequestHeader Map<String, String> headers) {
+        log.info(">>> EXECUTE-DEBUG REQUEST RECEIVED");
+        log.info("Body: {}", journeyPayload);
+        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
