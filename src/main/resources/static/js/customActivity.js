@@ -2,6 +2,7 @@ var connection = new Postmonger.Session();
 var payload = {};
 var schemaFields = [];
 var journeyMeta = {};
+var mobileNumberBinding = ""; // {{Event.xxx."fieldName"}} expression from journey defaults
 
 // State Tracking
 var currentStep = 1;
@@ -16,10 +17,18 @@ connection.on('requestedSchema', function(data) {
 });
 
 connection.on('requestedInteraction', function(interaction) {
-    console.log('requestedInteraction full payload:', JSON.stringify(interaction, null, 2));
     journeyMeta.journeyName = interaction.name;
     journeyMeta.journeyVersion = interaction.version;
     journeyMeta.journeyKey = interaction.key;
+
+    var defaults = interaction.defaults;
+    if (defaults && defaults.mobileNumber && defaults.mobileNumber.length > 0) {
+        mobileNumberBinding = defaults.mobileNumber[0];
+    } else {
+        mobileNumberBinding = "";
+    }
+
+    renderMobilePhoneInfo();
 });
 
 connection.on('initActivity', function(data) {
@@ -131,6 +140,8 @@ function validateStep1() {
 }
 
 function setupStep2UI() {
+    renderMobilePhoneInfo();
+
     // Reset Visibility
     $('#group-title, #group-images, #group-buttons').addClass('hidden');
 
@@ -221,6 +232,20 @@ function addButtonRow(data) {
 
 // --- FIELD INJECTION ---
 
+function renderMobilePhoneInfo() {
+    var $box = $('#mobile-phone-info');
+    if (!mobileNumberBinding) {
+        $box.removeClass('hidden mobile-ok').addClass('mobile-missing');
+        $box.html('<strong>Mobile Phone field:</strong> not configured in Journey settings');
+    } else {
+        // Extract field name from e.g. {{Event.DEAudience-xxx."test_phone_num"}}
+        var match = /\."([^"]+)"\}\}$/.exec(mobileNumberBinding);
+        var fieldName = match ? match[1] : mobileNumberBinding;
+        $box.removeClass('hidden mobile-missing').addClass('mobile-ok');
+        $box.html('<strong>Mobile Phone field:</strong> ' + fieldName);
+    }
+}
+
 function renderFields(fields) {
     var $list = $('#field-list');
     $list.empty();
@@ -305,7 +330,12 @@ function save() {
         inArgs.push(buildArgument(field.name, "plain", "{{" + field.key + "}}"));
     });
 
-    // 5. Metadata
+    // 5. Phone number from journey defaults
+    if (mobileNumberBinding) {
+        inArgs.push(buildArgument("_phone_number", "plain", mobileNumberBinding));
+    }
+
+    // 6. Metadata
     if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", "plain", journeyMeta.journeyName));
     if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", "plain", journeyMeta.journeyVersion));
 

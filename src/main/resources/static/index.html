@@ -28,6 +28,13 @@
         .img-preview { max-width: 100px; max-height: 100px; display: block; margin-top: 5px; border: 1px solid #ccc; }
 
         .hidden { display: none !important; }
+
+        #mobile-phone-info {
+            padding: 6px 10px; margin-bottom: 10px; border-radius: 4px;
+            font-size: 12px; border: 1px solid;
+        }
+        #mobile-phone-info.mobile-ok   { background: #f3f2f2; border-color: #e1e1e1; color: #3e3e3c; }
+        #mobile-phone-info.mobile-missing { background: #fde8e8; border-color: #c23934; color: #c23934; }
     </style>
 </head>
 <body>
@@ -58,6 +65,7 @@
         <!-- Left: Fields (Shared) -->
         <div class="left-col">
             <div class="slds-text-heading_small slds-m-bottom_small">Entry Data</div>
+            <div id="mobile-phone-info" class="hidden"></div>
             <div id="field-list"><p>Loading schema...</p></div>
         </div>
 
