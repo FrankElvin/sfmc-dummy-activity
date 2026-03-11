@@ -17,6 +17,7 @@ connection.on('requestedSchema', function(data) {
 });
 
 connection.on('requestedInteraction', function(interaction) {
+    console.log('requestedInteraction full payload:', JSON.stringify(interaction, null, 2));
     journeyMeta.journeyName = interaction.name;
     journeyMeta.journeyVersion = interaction.version;
     journeyMeta.journeyKey = interaction.key;
