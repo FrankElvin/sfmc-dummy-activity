@@ -31,9 +31,9 @@ connection.on('initActivity', function(data) {
     }
     var config = {};
 
-    // Flatten inArguments for easier reading
+    // Build config map: each inArgument is { name, type, value }
     $.each(inArgs, function(i, arg) {
-        $.extend(config, arg);
+        config[arg.name] = arg.value;
     });
 
     // 1. Restore Channel
