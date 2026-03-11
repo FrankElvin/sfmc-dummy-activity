@@ -125,7 +125,8 @@ function goToStep(step) {
 
 function validateStep1() {
     var val = $('#channel-select').val();
-    connection.trigger('updateButton', { button: 'next', enabled: !!val });
+    connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: !!val });
+    connection.trigger('updateButton', { button: 'back', visible: false });
 }
 
 function setupStep2UI() {
