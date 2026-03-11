@@ -60,10 +60,12 @@ connection.on('initActivity', function(data) {
         btns.forEach(btn => addButtonRow(btn));
     }
 
-    // If we have a channel, we technically could jump to step 2,
-    // but standard behavior is to start at step 1 or the saved step.
-    // For simplicity, we start at step 1 but validate it immediately.
-    validateStep1();
+    // If we have a saved channel, skip step 1 and go directly to step 2.
+    if (config.channel) {
+        goToStep(2);
+    } else {
+        validateStep1();
+    }
 });
 
 // Navigation Handler
