@@ -1,4 +1,7 @@
 
+spring:
+  mvc:
+    welcome-page.enabled: false
 
 app:
   url:
