@@ -79,7 +79,7 @@ public class Controller {
     }
 
     @PostMapping("/")
-    public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
+    public Map<String, String> executeRoot(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> / REQUEST RECEIVED");
         log.info("Headers: {}", headers);
         log.info("Payload: {}", payload);
