@@ -39,7 +39,7 @@ public class Service {
                     Map.of("processedMessage", "Text"),
                     Map.of("status", "Text")
                 ),
-            "url", baseUrl + "/execute",
+            "url", baseUrl,
             "verb", "POST",
             "body", "",
             "header", "",

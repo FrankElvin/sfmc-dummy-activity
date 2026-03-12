@@ -59,7 +59,7 @@ public class Controller {
         ));
     }
 
-    // --- Lifecycle Endpoints ---
+    // --- Actual Endpoints ---
 
     @PostMapping("/execute")
     public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
@@ -77,6 +77,17 @@ public class Controller {
         logHeaders(headers);
         return Map.of("status", "ok");
     }
+
+    @PostMapping("/")
+    public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
+        log.info(">>> / REQUEST RECEIVED");
+        log.info("Headers: {}", headers);
+        log.info("Payload: {}", payload);
+
+        return Map.of("status", "ok");
+    }
+
+    // --- Lifecycle Endpoints ---
 
     @PostMapping("/save")
     public Map<String, String> save(@RequestBody Map<String, Object> payload,
