@@ -87,6 +87,13 @@ public class Controller {
         return Map.of("status", "ok");
     }
 
+    @GetMapping("/version")
+    public String getVersion(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
+        log.info(">>> /version REQUEST RECEIVED");
+
+        return "with / services";
+    }
+
     // --- Lifecycle Endpoints ---
 
     @PostMapping("/save")
