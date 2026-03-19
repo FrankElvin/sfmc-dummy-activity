@@ -143,7 +143,7 @@ function validateStep1() {
 function getTemplateError(text) {
     // Structural check: strip valid [[word]] tokens, then no [[ or ]] should remain.
     var cleaned = text.replace(/\[\[\w+\]\]/g, '');
-    if (/\[\[|\]\]/.test(cleaned)) return 'Message template invalid';
+    if (/\[\[|\]\]/.test(cleaned)) return 'Message template invalid: Unbalanced brackets';
 
     // Skip field-name validation until the schema has loaded to avoid false errors on reopen
     if (schemaFields.length > 0) {
@@ -172,15 +172,19 @@ function validateStep2() {
     var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
-    var templateError = getTemplateError($('#msg-template').val());
+    var templateText = $('#msg-template').val().trim();
+    var templateError = templateText ? getTemplateError(templateText) : null;
     var $err = $('#msg-template-error');
     if (templateError) {
         $err.text(templateError).removeClass('hidden');
     } else {
         $err.addClass('hidden');
     }
+    var templateOk = templateText && !templateError;
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && !templateError });
+    var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
+
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
 }
 
 function setupStep2UI() {
@@ -422,8 +426,8 @@ $(window).ready(function() {
         lastFocusedElement = $(this);
     });
 
-    // Live template validation
-    $('#msg-template').on('input', function() {
+    // Live validation for required fields
+    $('#msg-template, #msg-title').on('input', function() {
         if (currentStep === 2) validateStep2();
     });
 
