@@ -14,6 +14,7 @@ var lastFocusedElement = null; // To know where to insert {{Field}}
 connection.on('requestedSchema', function(data) {
     if (data.schema) schemaFields = data.schema;
     renderFields(schemaFields);
+    if (currentStep === 2) validateStep2();
 });
 
 connection.on('requestedInteraction', function(interaction) {
