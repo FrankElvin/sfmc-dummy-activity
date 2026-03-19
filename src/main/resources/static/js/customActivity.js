@@ -145,23 +145,24 @@ function getTemplateError(text) {
     var cleaned = text.replace(/\[\[\w+\]\]/g, '');
     if (/\[\[|\]\]/.test(cleaned)) return 'Message template invalid';
 
-    // Collect valid field names from the loaded schema (mirror renderFields filter)
-    var validNames = [];
-    $.each(schemaFields, function(i, field) {
-        var name = field.name || field.key;
-        if (!name.startsWith('_') && !name.startsWith('Interaction.')) validNames.push(name);
-    });
+    // Skip field-name validation until the schema has loaded to avoid false errors on reopen
+    if (schemaFields.length > 0) {
+        var validNames = [];
+        $.each(schemaFields, function(i, field) {
+            var name = field.name || field.key;
+            if (!name.startsWith('_') && !name.startsWith('Interaction.')) validNames.push(name);
+        });
 
-    // Extract all placeholder names from the template
-    var re = /\[\[(\w+)\]\]/g, match, unknown = [];
-    while ((match = re.exec(text)) !== null) {
-        if (validNames.indexOf(match[1]) === -1) unknown.push(match[1]);
-    }
+        var re = /\[\[(\w+)\]\]/g, match, unknown = [];
+        while ((match = re.exec(text)) !== null) {
+            if (validNames.indexOf(match[1]) === -1) unknown.push(match[1]);
+        }
 
-    if (unknown.length === 1) {
-        return 'Message template invalid: Field ' + unknown[0] + ' not found in input data fields';
-    } else if (unknown.length > 1) {
-        return 'Message template invalid: Fields ' + unknown.join(', ') + ' not found in input data fields';
+        if (unknown.length === 1) {
+            return 'Message template invalid: Field ' + unknown[0] + ' not found in input data fields';
+        } else if (unknown.length > 1) {
+            return 'Message template invalid: Fields ' + unknown.join(', ') + ' not found in input data fields';
+        }
     }
 
     return null;
