@@ -140,21 +140,10 @@ function validateStep1() {
 }
 
 function isTemplateValid(text) {
-    // Count occurrences of [[ and ]] and ensure they are balanced and properly paired
-    var opens = (text.match(/\[\[/g) || []).length;
-    var closes = (text.match(/\]\]/g) || []).length;
-    if (opens !== closes) return false;
-    // Walk through to ensure no ]] before its matching [[
-    var depth = 0;
-    for (var i = 0; i < text.length - 1; i++) {
-        if (text[i] === '[' && text[i + 1] === '[') { depth++; i++; }
-        else if (text[i] === ']' && text[i + 1] === ']') {
-            depth--;
-            i++;
-            if (depth < 0) return false;
-        }
-    }
-    return depth === 0;
+    // Strip all valid [[word]] placeholders, then check no [[ or ]] remain.
+    // Single [ and ] are allowed anywhere.
+    var cleaned = text.replace(/\[\[\w+\]\]/g, '');
+    return !/\[\[|\]\]/.test(cleaned);
 }
 
 function validateStep2() {
