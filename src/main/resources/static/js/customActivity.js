@@ -139,10 +139,33 @@ function validateStep1() {
     connection.trigger('updateButton', { button: 'back', visible: false });
 }
 
+function isTemplateValid(text) {
+    // Count occurrences of [[ and ]] and ensure they are balanced and properly paired
+    var opens = (text.match(/\[\[/g) || []).length;
+    var closes = (text.match(/\]\]/g) || []).length;
+    if (opens !== closes) return false;
+    // Walk through to ensure no ]] before its matching [[
+    var depth = 0;
+    for (var i = 0; i < text.length - 1; i++) {
+        if (text[i] === '[' && text[i + 1] === '[') { depth++; i++; }
+        else if (text[i] === ']' && text[i + 1] === ']') {
+            depth--;
+            i++;
+            if (depth < 0) return false;
+        }
+    }
+    return depth === 0;
+}
+
 function validateStep2() {
     var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
-    var enabled = !needsPhone || !!mobileNumberBinding;
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: enabled });
+    var phoneOk = !needsPhone || !!mobileNumberBinding;
+
+    var templateText = $('#msg-template').val();
+    var templateOk = isTemplateValid(templateText);
+    $('#msg-template-error').toggleClass('hidden', templateOk);
+
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk });
 }
 
 function setupStep2UI() {
@@ -380,6 +403,11 @@ $(window).ready(function() {
     // Track focus for variable injection
     $(document).on('focus', '.inject-target', function() {
         lastFocusedElement = $(this);
+    });
+
+    // Live template validation
+    $('#msg-template').on('input', function() {
+        if (currentStep === 2) validateStep2();
     });
 
     // Add Image Logic
