@@ -126,7 +126,6 @@ function goToStep(step) {
             // Setup Step 2 UI based on Channel
             setupStep2UI();
             // UI: Show "Done", Show "Back"
-            connection.trigger('updateButton', { button: 'next', text: 'done', visible: true });
             connection.trigger('updateButton', { button: 'back', visible: true });
         }
     }, 100); // 100ms delay gives SFMC time to finish its "loading" animation
@@ -138,6 +137,12 @@ function validateStep1() {
     var val = $('#channel-select').val();
     connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: !!val });
     connection.trigger('updateButton', { button: 'back', visible: false });
+}
+
+function validateStep2() {
+    var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
+    var enabled = !needsPhone || !!mobileNumberBinding;
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: enabled });
 }
 
 function setupStep2UI() {
@@ -161,6 +166,8 @@ function setupStep2UI() {
         $('#group-images').removeClass('hidden');
         $('#group-buttons').removeClass('hidden');
     }
+
+    validateStep2();
 }
 
 // --- DYNAMIC WIDGETS ---
