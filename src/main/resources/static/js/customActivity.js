@@ -149,7 +149,7 @@ function getTemplateError(text) {
     var validNames = [];
     $.each(schemaFields, function(i, field) {
         var name = field.name || field.key;
-        if (!name.startsWith('_')) validNames.push(name);
+        if (!name.startsWith('_') && !name.startsWith('Interaction.')) validNames.push(name);
     });
 
     // Extract all placeholder names from the template
@@ -298,7 +298,7 @@ function renderFields(fields) {
 
     $.each(fields, function(i, field) {
         var fieldName = field.name || field.key;
-        if(fieldName.startsWith("_")) return;
+        if (fieldName.startsWith('_') || fieldName.startsWith('Interaction.')) return;
 
         var $chip = $('<div class="field-chip"></div>').text(fieldName);
         $chip.click(function() {
@@ -373,7 +373,7 @@ function save() {
     // not be forwarded, otherwise SFMC rejects the activity with an invalid argument error.
     $.each(schemaFields, function(i, field) {
         var name = field.name || field.key;
-        if (name.startsWith('_')) return;
+        if (name.startsWith('_') || name.startsWith('Interaction.')) return;
         inArgs.push(buildArgument(name, "plain", "{{" + field.key + "}}"));
     });
 
