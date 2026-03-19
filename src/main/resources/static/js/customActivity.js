@@ -339,7 +339,7 @@ function save() {
     // 6. Metadata
     if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", "plain", journeyMeta.journeyName));
     if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", "plain", journeyMeta.journeyVersion));
-    if (payload.name) inArgs.push(buildArgument("_activityName", "plain", payload.name));
+    inArgs.push(buildArgument("_activityName", "plain", payload.name || ""));
 
     // UPDATE PAYLOAD
     if (!payload['arguments']) payload['arguments'] = {};
