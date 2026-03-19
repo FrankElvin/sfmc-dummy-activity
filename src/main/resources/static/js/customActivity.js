@@ -333,7 +333,7 @@ function save() {
 
     // 5. Phone number from journey defaults
     if (mobileNumberBinding) {
-        inArgs.push(buildArgument("_phone_number", "plain", mobileNumberBinding));
+        inArgs.push(buildArgument("_phoneNumber", "plain", mobileNumberBinding));
     }
 
     // 6. Metadata
