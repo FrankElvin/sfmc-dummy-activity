@@ -368,11 +368,13 @@ function save() {
     }
 
     // 4. Schema Mapping (Data Binding)
-    // We add all available schema fields to inArguments so SFMC resolves them if used in {{ }}
+    // We add entry data schema fields to inArguments so SFMC resolves them if used in {{ }}.
+    // Skip _-prefixed fields — those are output parameters from upstream activities and must
+    // not be forwarded, otherwise SFMC rejects the activity with an invalid argument error.
     $.each(schemaFields, function(i, field) {
-        //var obj = {};
-        //obj[field.name] = "{{" + field.key + "}}";
-        inArgs.push(buildArgument(field.name, "plain", "{{" + field.key + "}}"));
+        var name = field.name || field.key;
+        if (name.startsWith('_')) return;
+        inArgs.push(buildArgument(name, "plain", "{{" + field.key + "}}"));
     });
 
     // 5. Phone number from journey defaults
