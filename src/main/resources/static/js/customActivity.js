@@ -139,22 +139,46 @@ function validateStep1() {
     connection.trigger('updateButton', { button: 'back', visible: false });
 }
 
-function isTemplateValid(text) {
-    // Strip all valid [[word]] placeholders, then check no [[ or ]] remain.
-    // Single [ and ] are allowed anywhere.
+function getTemplateError(text) {
+    // Structural check: strip valid [[word]] tokens, then no [[ or ]] should remain.
     var cleaned = text.replace(/\[\[\w+\]\]/g, '');
-    return !/\[\[|\]\]/.test(cleaned);
+    if (/\[\[|\]\]/.test(cleaned)) return 'Message template invalid';
+
+    // Collect valid field names from the loaded schema (mirror renderFields filter)
+    var validNames = [];
+    $.each(schemaFields, function(i, field) {
+        var name = field.name || field.key;
+        if (!name.startsWith('_')) validNames.push(name);
+    });
+
+    // Extract all placeholder names from the template
+    var re = /\[\[(\w+)\]\]/g, match, unknown = [];
+    while ((match = re.exec(text)) !== null) {
+        if (validNames.indexOf(match[1]) === -1) unknown.push(match[1]);
+    }
+
+    if (unknown.length === 1) {
+        return 'Message template invalid: Field ' + unknown[0] + ' not found in input data fields';
+    } else if (unknown.length > 1) {
+        return 'Message template invalid: Fields ' + unknown.join(', ') + ' not found in input data fields';
+    }
+
+    return null;
 }
 
 function validateStep2() {
     var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
-    var templateText = $('#msg-template').val();
-    var templateOk = isTemplateValid(templateText);
-    $('#msg-template-error').toggleClass('hidden', templateOk);
+    var templateError = getTemplateError($('#msg-template').val());
+    var $err = $('#msg-template-error');
+    if (templateError) {
+        $err.text(templateError).removeClass('hidden');
+    } else {
+        $err.addClass('hidden');
+    }
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && !templateError });
 }
 
 function setupStep2UI() {
