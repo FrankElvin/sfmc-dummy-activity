@@ -78,15 +78,6 @@ public class Controller {
         return Map.of("status", "ok");
     }
 
-    @PostMapping({"/", ""})
-    public Map<String, String> executeRoot(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
-        log.info(">>> / REQUEST RECEIVED");
-        log.info("Headers: {}", headers);
-        log.info("Payload: {}", payload);
-
-        return Map.of("status", "ok");
-    }
-
     @GetMapping("/version")
     public String getVersion(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> /version REQUEST RECEIVED");

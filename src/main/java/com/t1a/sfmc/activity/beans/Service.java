@@ -36,7 +36,6 @@ public class Service {
         Map<String, Object> result = new HashMap<>( Map.of(
             "inArguments", new Object[]{},
             "outArguments", List.of(
-                    Map.of("processedMessage", "Text"),
                     Map.of("status", "Text")
                 ),
             "url", baseUrl,
