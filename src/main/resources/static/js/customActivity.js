@@ -350,21 +350,21 @@ function save() {
     console.log("Saving data. Payload before: ", JSON.stringify(payload, null, 2));
 
     // 1. Channel
-    inArgs.push(buildArgument("channel", "plain", selectedChannel));
+    inArgs.push(buildArgument("_channel", "plain", selectedChannel));
 
     // 2. Common Fields
     var rawTemplate = $('#msg-template').val();
-    inArgs.push(buildArgument("messageTemplate", "plain", rawTemplate));
+    inArgs.push(buildArgument("_messageTemplate", "plain", rawTemplate));
 
     // 3. Conditional Fields
     if (selectedChannel === 'push') {
         var rawTitle = $('#msg-title').val();
-        inArgs.push(buildArgument("messageTitle", "plain", rawTitle));
+        inArgs.push(buildArgument("_messageTitle", "plain", rawTitle));
     }
 
     if (selectedChannel === 'viber') {
         var rawViberTemplate = $('#viber-msg-template').val();
-        inArgs.push(buildArgument("viberMessageTemplate", "plain", rawViberTemplate));
+        inArgs.push(buildArgument("_viberMessageTemplate", "plain", rawViberTemplate));
     }
 
     if (selectedChannel === 'viber' || selectedChannel === 'push') {
@@ -374,7 +374,7 @@ function save() {
             var val = $(this).val();
             if(val) images.push(val);
         });
-        inArgs.push(buildArgument("images", "images", images)); // Backend will receive List<String>
+        inArgs.push(buildArgument("_images", "images", images)); // Backend will receive List<String>
 
         // Collect Buttons
         var buttons = [];
@@ -386,7 +386,7 @@ function save() {
                 track: $row.find('.btn-track').is(':checked')
             });
         });
-        inArgs.push(buildArgument("buttons", "buttons", buttons));
+        inArgs.push(buildArgument("_buttons", "buttons", buttons));
         //inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
     }
 
