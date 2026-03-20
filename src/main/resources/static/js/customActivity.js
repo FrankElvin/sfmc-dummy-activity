@@ -398,11 +398,6 @@ function save() {
 
     payload['arguments'].execute.inArguments = inArgs;
     payload['metaData'].isConfigured = true;
-    // add security options
-    payload['arguments'].execute.securityOptions = {
-        "securityContextKey": "inecobank-wso2-oauth-kong-test",
-        "securityType": "securityContext"
-    };
 
     console.log("Saving data. Payload after: ", JSON.stringify(payload, null, 2));
 
