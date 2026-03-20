@@ -187,12 +187,12 @@ function validateTemplate(textareaId, errorId) {
 }
 
 function validateStep2() {
-    var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
+    var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber_sms');
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
     var templateOk = validateTemplate('#msg-template', '#msg-template-error');
 
-    var viberTemplateOk = selectedChannel !== 'viber' || validateTemplate('#viber-msg-template', '#viber-msg-template-error');
+    var viberTemplateOk = selectedChannel !== 'viber_sms' || validateTemplate('#viber-msg-template', '#viber-msg-template-error');
 
     var titleOk = selectedChannel !== 'push' || $('#msg-title').val().trim() !== '';
 
@@ -211,7 +211,7 @@ function setupStep2UI() {
     if (selectedChannel === 'sms') {
         // Just Template
     }
-    else if (selectedChannel === 'viber') {
+    else if (selectedChannel === 'viber_sms') {
         $('#group-viber-template').removeClass('hidden');
         $('#group-images').removeClass('hidden');
         $('#group-buttons').removeClass('hidden');
@@ -362,12 +362,12 @@ function save() {
         inArgs.push(buildArgument("_messageTitle", "plain", rawTitle));
     }
 
-    if (selectedChannel === 'viber') {
+    if (selectedChannel === 'viber_sms') {
         var rawViberTemplate = $('#viber-msg-template').val();
         inArgs.push(buildArgument("_viberMessageTemplate", "plain", rawViberTemplate));
     }
 
-    if (selectedChannel === 'viber' || selectedChannel === 'push') {
+    if (selectedChannel === 'viber_sms' || selectedChannel === 'push') {
         // Collect Images
         var images = [];
         $('.img-input').each(function() {
