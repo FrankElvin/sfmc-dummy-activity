@@ -194,10 +194,16 @@ function validateStep2() {
     }
     var templateOk = templatePresent && !templateError;
 
+    let titleOk = true;
+    if (selectedChannel === 'push') {
+        var titleText = $('#msg-title').val().trim();
+        if (titleText === '') {
+            titleOk = false;
+        }
+    }
     //var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
 
-    //connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
 }
 
 function setupStep2UI() {
