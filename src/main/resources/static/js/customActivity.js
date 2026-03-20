@@ -178,6 +178,13 @@ function validateStep2() {
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
     var templateText = $('#msg-template').val().trim();
+    let templatePresent;
+    if (templateText === '') {
+        templatePresent = false;
+    } else {
+        templatePresent = true;
+    }
+
     var templateError = templateText ? getTemplateError(templateText) : null;
     var $err = $('#msg-template-error');
     if (templateError) {
@@ -185,11 +192,12 @@ function validateStep2() {
     } else {
         $err.addClass('hidden');
     }
-    var templateOk = templateText && !templateError;
+    var templateOk = templatePresent && !templateError;
 
-    var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
+    //var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
+    //connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk });
 }
 
 function setupStep2UI() {
