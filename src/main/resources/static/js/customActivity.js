@@ -118,6 +118,11 @@ function goToStep(step) {
     $('.step-container').removeClass('active');
     $('#step' + step).addClass('active');
 
+    if (step === 2) {
+        // Disable Done immediately so it cannot be clicked before validateStep2 runs
+        connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: false });
+    }
+
     setTimeout(function() {
         if (step === 1) {
             // UI: Show "Next", Hide "Back"
@@ -332,13 +337,6 @@ function insertAtCursor(text) {
 // --- SAVING ---
 
 function save() {
-    var templateText = $('#msg-template').val().trim();
-    var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
-    if (!templateText || !titleOk) {
-        validateStep2(); // refresh button state in case it drifted
-        return;
-    }
-
     var inArgs = [];
 
     console.log("Saving data. Payload before: ", JSON.stringify(payload, null, 2));
