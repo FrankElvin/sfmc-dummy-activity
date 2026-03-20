@@ -332,6 +332,13 @@ function insertAtCursor(text) {
 // --- SAVING ---
 
 function save() {
+    var templateText = $('#msg-template').val().trim();
+    var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
+    if (!templateText || !titleOk) {
+        validateStep2(); // refresh button state in case it drifted
+        return;
+    }
+
     var inArgs = [];
 
     console.log("Saving data. Payload before: ", JSON.stringify(payload, null, 2));
