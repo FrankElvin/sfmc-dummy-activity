@@ -57,6 +57,7 @@ connection.on('initActivity', function(data) {
     // 2. Restore Fields (Decoding [[ ]] back to {{ }})
     if (config.messageTitle) $('#msg-title').val(config.messageTitle);
     if (config.messageTemplate) $('#msg-template').val(config.messageTemplate);
+    if (config.viberMessageTemplate) $('#viber-msg-template').val(config.viberMessageTemplate);
 
     // 3. Restore Images
     if (config.images) {
@@ -173,44 +174,36 @@ function getTemplateError(text) {
     return null;
 }
 
+function validateTemplate(textareaId, errorId) {
+    var text = $(textareaId).val().trim();
+    var error = text ? getTemplateError(text) : null;
+    var $err = $(errorId);
+    if (error) {
+        $err.text(error).removeClass('hidden');
+    } else {
+        $err.addClass('hidden');
+    }
+    return text !== '' && !error;
+}
+
 function validateStep2() {
     var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber');
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
-    var templateText = $('#msg-template').val().trim();
-    let templatePresent;
-    if (templateText === '') {
-        templatePresent = false;
-    } else {
-        templatePresent = true;
-    }
+    var templateOk = validateTemplate('#msg-template', '#msg-template-error');
 
-    var templateError = templateText ? getTemplateError(templateText) : null;
-    var $err = $('#msg-template-error');
-    if (templateError) {
-        $err.text(templateError).removeClass('hidden');
-    } else {
-        $err.addClass('hidden');
-    }
-    var templateOk = templatePresent && !templateError;
+    var viberTemplateOk = selectedChannel !== 'viber' || validateTemplate('#viber-msg-template', '#viber-msg-template-error');
 
-    let titleOk = true;
-    if (selectedChannel === 'push') {
-        var titleText = $('#msg-title').val().trim();
-        if (titleText === '') {
-            titleOk = false;
-        }
-    }
-    //var titleOk = selectedChannel !== 'push' || !!$('#msg-title').val().trim();
+    var titleOk = selectedChannel !== 'push' || $('#msg-title').val().trim() !== '';
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && titleOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberTemplateOk && titleOk });
 }
 
 function setupStep2UI() {
     renderMobilePhoneInfo();
 
     // Reset Visibility
-    $('#group-title, #group-images, #group-buttons').addClass('hidden');
+    $('#group-title, #group-viber-template, #group-images, #group-buttons').addClass('hidden');
 
     // Always show Template
     $('#group-template').removeClass('hidden');
@@ -219,6 +212,7 @@ function setupStep2UI() {
         // Just Template
     }
     else if (selectedChannel === 'viber') {
+        $('#group-viber-template').removeClass('hidden');
         $('#group-images').removeClass('hidden');
         $('#group-buttons').removeClass('hidden');
     }
@@ -368,6 +362,11 @@ function save() {
         inArgs.push(buildArgument("messageTitle", "plain", rawTitle));
     }
 
+    if (selectedChannel === 'viber') {
+        var rawViberTemplate = $('#viber-msg-template').val();
+        inArgs.push(buildArgument("viberMessageTemplate", "plain", rawViberTemplate));
+    }
+
     if (selectedChannel === 'viber' || selectedChannel === 'push') {
         // Collect Images
         var images = [];
@@ -441,7 +440,7 @@ $(window).ready(function() {
     });
 
     // Live validation for required fields
-    $('#msg-template, #msg-title').on('input', function() {
+    $('#msg-template, #viber-msg-template, #msg-title').on('input', function() {
         if (currentStep === 2) validateStep2();
     });
 
