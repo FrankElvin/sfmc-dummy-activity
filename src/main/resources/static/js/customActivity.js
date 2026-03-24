@@ -49,32 +49,32 @@ connection.on('initActivity', function(data) {
     });
 
     // 1. Restore Channel
-    if (config.channel) {
-        selectedChannel = config.channel;
+    if (config._channel) {
+        selectedChannel = config._channel;
         $('#channel-select').val(selectedChannel);
     }
 
     // 2. Restore Fields (Decoding [[ ]] back to {{ }})
-    if (config.messageTitle) $('#msg-title').val(config.messageTitle);
-    if (config.messageTemplate) $('#msg-template').val(config.messageTemplate);
-    if (config.viberMessageTemplate) $('#viber-msg-template').val(config.viberMessageTemplate);
+    if (config._messageTitle) $('#msg-title').val(config._messageTitle);
+    if (config._messageTemplate) $('#msg-template').val(config._messageTemplate);
+    if (config._viberMessageTemplate) $('#viber-msg-template').val(config._viberMessageTemplate);
 
     // 3. Restore Images
-    if (config.images) {
-        // config.images might be a JSON string or array depending on how it was saved.
+    if (config._images) {
+        // config._images might be a JSON string or array depending on how it was saved.
         // Assuming Array for cleanliness in this example.
-        var imgs = Array.isArray(config.images) ? config.images : JSON.parse(config.images || "[]");
+        var imgs = Array.isArray(config._images) ? config._images : JSON.parse(config._images || "[]");
         imgs.forEach(url => addImageRow(url));
     }
 
     // 4. Restore Buttons
-    if (config.buttons) {
-        var btns = Array.isArray(config.buttons) ? config.buttons : JSON.parse(config.buttons || "[]");
+    if (config._buttons) {
+        var btns = Array.isArray(config._buttons) ? config._buttons : JSON.parse(config._buttons || "[]");
         btns.forEach(btn => addButtonRow(btn));
     }
 
     // If we have a saved channel, skip step 1 and go directly to step 2.
-    if (config.channel) {
+    if (config._channel) {
         goToStep(2);
     } else {
         validateStep1();
