@@ -33,9 +33,10 @@ public class Controller {
         return new HashMap<>(Map.of(
                 "workflowApiVersion", "1.1",
                 "metaData", Map.of(
-                        "icon", "images/icon.png",
-                        "iconSmall", "images/icon-small.png",
-                        "category", "Custom"
+                        "icon", "images/ineco-icon-plain.svg",
+                        "iconSmall", "images/ineco-icon-plain.svg",
+                        "category", "Messages",
+                        "backgroundColor", "#2596be"
                 ),
                 "type", "REST",
                 "lang", "en-US",
