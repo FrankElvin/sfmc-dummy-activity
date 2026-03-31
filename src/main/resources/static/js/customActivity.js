@@ -459,7 +459,7 @@ $(window).ready(function() {
     });
 
     // Live validation for required fields
-    $('#msg-template, #viber-msg-template, #msg-title').on('input', function() {
+    $('#msg-template, #viber-msg-template, #msg-title, #msg-template-am, #msg-template-en').on('input', function() {
         if (currentStep === 2) validateStep2();
     });
 
