@@ -208,7 +208,11 @@ function validateStep2() {
 }
 
 function setupStep2UI() {
-    renderMobilePhoneInfo();
+    if (selectedChannel === 'push') {
+        $('#mobile-phone-info').addClass('hidden');
+    } else {
+        renderMobilePhoneInfo();
+    }
 
     // Reset Visibility
     $('#group-title, #group-viber-template, #group-images, #group-buttons, #group-push-am-template, #group-push-en-template').addClass('hidden');
