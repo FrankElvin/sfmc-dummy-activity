@@ -82,20 +82,38 @@
 
             <!-- SECTION: Viber Message Text (Viber only) -->
             <div id="group-viber-template" class="slds-form-element slds-m-bottom_medium hidden">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Viber Message Text</label>
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Viber message template</label>
                 <div class="slds-form-element__control">
                     <textarea id="viber-msg-template" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
                 </div>
                 <p id="viber-msg-template-error" class="hidden" style="color:red;margin-top:4px;"></p>
             </div>
 
-            <!-- SECTION: Message Template (All) -->
+            <!-- SECTION: Message Template (SMS / Viber+SMS) -->
             <div id="group-template" class="slds-form-element slds-m-bottom_medium">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Message Text</label>
+                <label id="msg-template-label" class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Message template</label>
                 <div class="slds-form-element__control">
                     <textarea id="msg-template" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
                 </div>
                 <p id="msg-template-error" class="hidden" style="color:red;margin-top:4px;"></p>
+            </div>
+
+            <!-- SECTION: Push Armenian Message Template (Push only) -->
+            <div id="group-push-am-template" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Armenian language message template</label>
+                <div class="slds-form-element__control">
+                    <textarea id="msg-template-am" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
+                </div>
+                <p id="msg-template-am-error" class="hidden" style="color:red;margin-top:4px;"></p>
+            </div>
+
+            <!-- SECTION: Push English Message Template (Push only) -->
+            <div id="group-push-en-template" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>English language message template</label>
+                <div class="slds-form-element__control">
+                    <textarea id="msg-template-en" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
+                </div>
+                <p id="msg-template-en-error" class="hidden" style="color:red;margin-top:4px;"></p>
             </div>
 
             <!-- SECTION: Images (Viber & Push) -->
