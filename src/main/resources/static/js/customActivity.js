@@ -55,8 +55,9 @@ connection.on('initActivity', function(data) {
     }
 
     // 2. Restore Fields (Decoding [[ ]] back to {{ }})
-    if (config._messageTitle) $('#msg-title').val(config._messageTitle);
     if (selectedChannel === 'push') {
+        if (config._messageTitleAm) $('#msg-title-am').val(config._messageTitleAm);
+        if (config._messageTitleEn) $('#msg-title-en').val(config._messageTitleEn);
         if (config._messageTemplateAm) $('#msg-template-am').val(config._messageTemplateAm);
         if (config._messageTemplateEn) $('#msg-template-en').val(config._messageTemplateEn);
     } else {
@@ -199,12 +200,12 @@ function validateStep2() {
 
     var viberTemplateOk = selectedChannel !== 'viber_sms' || validateTemplate('#viber-msg-template', '#viber-msg-template-error');
 
-    var titleOk = selectedChannel !== 'push' || $('#msg-title').val().trim() !== '';
-
+    var pushAmTitleOk = selectedChannel !== 'push' || validateTemplate('#msg-title-am', '#msg-title-am-error');
     var pushAmOk = selectedChannel !== 'push' || validateTemplate('#msg-template-am', '#msg-template-am-error');
+    var pushEnTitleOk = selectedChannel !== 'push' || validateTemplate('#msg-title-en', '#msg-title-en-error');
     var pushEnOk = selectedChannel !== 'push' || validateTemplate('#msg-template-en', '#msg-template-en-error');
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberTemplateOk && titleOk && pushAmOk && pushEnOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberTemplateOk && pushAmTitleOk && pushAmOk && pushEnTitleOk && pushEnOk });
 }
 
 function setupStep2UI() {
@@ -215,7 +216,7 @@ function setupStep2UI() {
     }
 
     // Reset Visibility
-    $('#group-title, #group-viber-template, #group-images, #group-buttons, #group-push-am-template, #group-push-en-template').addClass('hidden');
+    $('#group-push-am-title, #group-push-en-title, #group-viber-template, #group-images, #group-buttons, #group-push-am-template, #group-push-en-template').addClass('hidden');
     $('#group-template').removeClass('hidden');
     $('#msg-template-label').html('<abbr class="slds-required" title="required">* </abbr>Message template');
 
@@ -230,8 +231,9 @@ function setupStep2UI() {
     }
     else if (selectedChannel === 'push') {
         $('#group-template').addClass('hidden');
-        $('#group-title').removeClass('hidden');
+        $('#group-push-am-title').removeClass('hidden');
         $('#group-push-am-template').removeClass('hidden');
+        $('#group-push-en-title').removeClass('hidden');
         $('#group-push-en-template').removeClass('hidden');
         $('#group-images').removeClass('hidden');
         $('#group-buttons').removeClass('hidden');
@@ -377,8 +379,8 @@ function save() {
 
     // 3. Conditional Fields
     if (selectedChannel === 'push') {
-        var rawTitle = $('#msg-title').val();
-        inArgs.push(buildArgument("_messageTitle", "plain", rawTitle));
+        inArgs.push(buildArgument("_messageTitleAm", "plain", $('#msg-title-am').val()));
+        inArgs.push(buildArgument("_messageTitleEn", "plain", $('#msg-title-en').val()));
     }
 
     if (selectedChannel === 'viber_sms') {
@@ -459,7 +461,7 @@ $(window).ready(function() {
     });
 
     // Live validation for required fields
-    $('#msg-template, #viber-msg-template, #msg-title, #msg-template-am, #msg-template-en').on('input', function() {
+    $('#msg-template, #viber-msg-template, #msg-title-am, #msg-title-en, #msg-template-am, #msg-template-en').on('input', function() {
         if (currentStep === 2) validateStep2();
     });
 

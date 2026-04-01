@@ -72,12 +72,40 @@
         <!-- Right: Dynamic Form -->
         <div class="right-col">
 
-            <!-- SECTION: Message Title (Push Only) -->
-            <div id="group-title" class="slds-form-element slds-m-bottom_medium hidden">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Message Title</label>
+            <!-- SECTION: Push Armenian Title Template (Push only) -->
+            <div id="group-push-am-title" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Armenian title template</label>
                 <div class="slds-form-element__control">
-                    <input type="text" id="msg-title" class="slds-input inject-target" placeholder="Enter title..." />
+                    <input type="text" id="msg-title-am" class="slds-input inject-target" placeholder="Բարև [[first_name]]" />
                 </div>
+                <p id="msg-title-am-error" class="hidden" style="color:red;margin-top:4px;"></p>
+            </div>
+
+            <!-- SECTION: Push Armenian Message Template (Push only) -->
+            <div id="group-push-am-template" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Armenian message template</label>
+                <div class="slds-form-element__control">
+                    <textarea id="msg-template-am" class="slds-textarea inject-target" rows="4" placeholder="Առաջադրված է [[first_name]] [[last_name]]"></textarea>
+                </div>
+                <p id="msg-template-am-error" class="hidden" style="color:red;margin-top:4px;"></p>
+            </div>
+
+            <!-- SECTION: Push English Title Template (Push only) -->
+            <div id="group-push-en-title" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>English title template</label>
+                <div class="slds-form-element__control">
+                    <input type="text" id="msg-title-en" class="slds-input inject-target" placeholder="Hello [[first_name]]" />
+                </div>
+                <p id="msg-title-en-error" class="hidden" style="color:red;margin-top:4px;"></p>
+            </div>
+
+            <!-- SECTION: Push English Message Template (Push only) -->
+            <div id="group-push-en-template" class="slds-form-element slds-m-bottom_medium hidden">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>English message template</label>
+                <div class="slds-form-element__control">
+                    <textarea id="msg-template-en" class="slds-textarea inject-target" rows="4" placeholder="Promotion for [[first_name]] [[last_name]]"></textarea>
+                </div>
+                <p id="msg-template-en-error" class="hidden" style="color:red;margin-top:4px;"></p>
             </div>
 
             <!-- SECTION: Viber Message Text (Viber only) -->
@@ -96,24 +124,6 @@
                     <textarea id="msg-template" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
                 </div>
                 <p id="msg-template-error" class="hidden" style="color:red;margin-top:4px;"></p>
-            </div>
-
-            <!-- SECTION: Push Armenian Message Template (Push only) -->
-            <div id="group-push-am-template" class="slds-form-element slds-m-bottom_medium hidden">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Armenian language message template</label>
-                <div class="slds-form-element__control">
-                    <textarea id="msg-template-am" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
-                </div>
-                <p id="msg-template-am-error" class="hidden" style="color:red;margin-top:4px;"></p>
-            </div>
-
-            <!-- SECTION: Push English Message Template (Push only) -->
-            <div id="group-push-en-template" class="slds-form-element slds-m-bottom_medium hidden">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>English language message template</label>
-                <div class="slds-form-element__control">
-                    <textarea id="msg-template-en" class="slds-textarea inject-target" rows="4" placeholder="Hello {{Name}}..."></textarea>
-                </div>
-                <p id="msg-template-en-error" class="hidden" style="color:red;margin-top:4px;"></p>
             </div>
 
             <!-- SECTION: Images (Viber & Push) -->
