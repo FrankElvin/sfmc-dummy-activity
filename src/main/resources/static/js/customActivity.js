@@ -427,7 +427,7 @@ function save() {
     }
 
     // 6. Metadata
-    inArgs.push(buildArgument("_subscriberId", "plain", "{{Contact.Key}}"));
+    inArgs.push(buildArgument("_subscriberId", "plain", "{{Contact.Default.Email::SubscriberID}}"));
     if (journeyMeta.journeyName) inArgs.push(buildArgument("_journeyName", "plain", journeyMeta.journeyName));
     if (journeyMeta.journeyVersion) inArgs.push(buildArgument("_journeyVersion", "plain", journeyMeta.journeyVersion));
     inArgs.push(buildArgument("_activityName", "plain", payload.name || ""));
