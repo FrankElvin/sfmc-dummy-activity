@@ -198,14 +198,42 @@ function validateStep2() {
 
     var templateOk = selectedChannel === 'push' || validateTemplate('#msg-template', '#msg-template-error');
 
-    var viberTemplateOk = selectedChannel !== 'viber_sms' || validateTemplate('#viber-msg-template', '#viber-msg-template-error');
+    var viberOk = true;
+    if (selectedChannel === 'viber_sms') {
+        var hasText = $('#viber-msg-template').val().trim() !== '';
+        var hasImage = $('.img-input').filter(function() { return $(this).val().trim() !== ''; }).length > 0;
+        var hasButton = $('.button-row').length > 0;
+
+        if (hasText) {
+            if (!validateTemplate('#viber-msg-template', '#viber-msg-template-error')) viberOk = false;
+        } else {
+            $('#viber-msg-template-error').addClass('hidden');
+        }
+
+        var comboError = null;
+        if (!hasText && !hasImage && !hasButton) {
+            comboError = 'Please add text, an image, or buttons';
+        } else if (hasImage && !hasButton) {
+            comboError = 'An image requires at least one button';
+        } else if (!hasText && !hasImage && hasButton) {
+            comboError = 'Buttons require text or an image';
+        }
+
+        var $comboErr = $('#viber-combo-error');
+        if (comboError) {
+            $comboErr.text(comboError).removeClass('hidden');
+            viberOk = false;
+        } else {
+            $comboErr.addClass('hidden');
+        }
+    }
 
     var pushAmTitleOk = selectedChannel !== 'push' || validateTemplate('#msg-title-am', '#msg-title-am-error');
     var pushAmOk = selectedChannel !== 'push' || validateTemplate('#msg-template-am', '#msg-template-am-error');
     var pushEnTitleOk = selectedChannel !== 'push' || validateTemplate('#msg-title-en', '#msg-title-en-error');
     var pushEnOk = selectedChannel !== 'push' || validateTemplate('#msg-template-en', '#msg-template-en-error');
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberTemplateOk && pushAmTitleOk && pushAmOk && pushEnTitleOk && pushEnOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberOk && pushAmTitleOk && pushAmOk && pushEnTitleOk && pushEnOk });
 }
 
 function setupStep2UI() {
@@ -217,6 +245,7 @@ function setupStep2UI() {
 
     // Reset Visibility
     $('#group-push-am-title, #group-push-en-title, #group-viber-template, #group-images, #group-buttons, #group-push-am-template, #group-push-en-template').addClass('hidden');
+    $('#viber-combo-error').addClass('hidden');
     $('#group-template').removeClass('hidden');
     $('#msg-template-label').html('<abbr class="slds-required" title="required">* </abbr>Message template');
 
@@ -250,7 +279,7 @@ function addImageRow(value) {
 
     var html = `
         <div class="dynamic-item" id="img-row-${id}">
-            <div class="remove-btn" onclick="$('#img-row-${id}').remove()">Remove</div>
+            <div class="remove-btn" onclick="removeItem('#img-row-${id}')">Remove</div>
             <label class="slds-form-element__label">Image URL</label>
             <input type="text" class="slds-input img-input" value="${value}" placeholder="https://..." oninput="updatePreview(this)">
             <img src="${value}" class="img-preview ${value ? '' : 'hidden'}">
@@ -267,6 +296,12 @@ window.updatePreview = function(input) {
     } else {
         $img.addClass('hidden');
     }
+    if (currentStep === 2) validateStep2();
+};
+
+window.removeItem = function(selector) {
+    $(selector).remove();
+    if (currentStep === 2) validateStep2();
 };
 
 function addButtonRow(data) {
@@ -284,7 +319,7 @@ function addButtonRow(data) {
     // Note: Title and URL inputs have class 'inject-target' so we can insert variables into them
     var html = `
         <div class="dynamic-item button-row" id="btn-row-${id}">
-            <div class="remove-btn" onclick="$('#btn-row-${id}').remove()">Remove</div>
+            <div class="remove-btn" onclick="removeItem('#btn-row-${id}')">Remove</div>
 
             <div class="slds-form-element">
                 <label class="slds-form-element__label">Button Title</label>
@@ -467,8 +502,8 @@ $(window).ready(function() {
     });
 
     // Add Image Logic
-    $('#btn-add-image').click(function() { addImageRow(""); });
+    $('#btn-add-image').click(function() { addImageRow(""); if (currentStep === 2) validateStep2(); });
 
     // Add Button Logic
-    $('#btn-add-button').click(function() { addButtonRow({}); });
+    $('#btn-add-button').click(function() { addButtonRow({}); if (currentStep === 2) validateStep2(); });
 });
