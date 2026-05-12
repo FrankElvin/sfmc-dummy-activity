@@ -65,16 +65,14 @@ connection.on('initActivity', function(data) {
     }
     if (config._viberMessageTemplate) $('#viber-msg-template').val(config._viberMessageTemplate);
 
-    // 3. Restore Images
-    if (config._images) {
-        // config._images might be a JSON string or array depending on how it was saved.
-        // Assuming Array for cleanliness in this example.
+    // 3. Restore Images (Viber only)
+    if (selectedChannel === 'viber_sms' && config._images) {
         var imgs = Array.isArray(config._images) ? config._images : JSON.parse(config._images || "[]");
         imgs.forEach(url => addImageRow(url));
     }
 
-    // 4. Restore Buttons
-    if (config._buttons) {
+    // 4. Restore Buttons (Viber only)
+    if (selectedChannel === 'viber_sms' && config._buttons) {
         var btns = Array.isArray(config._buttons) ? config._buttons : JSON.parse(config._buttons || "[]");
         btns.forEach(btn => addButtonRow(btn));
     }
@@ -421,7 +419,7 @@ function save() {
         inArgs.push(buildArgument("_viberMessageTemplate", "plain", rawViberTemplate));
     }
 
-    if (selectedChannel === 'viber_sms' || selectedChannel === 'push') {
+    if (selectedChannel === 'viber_sms') {
         // Collect Images
         var images = [];
         $('.img-input').each(function() {
@@ -441,7 +439,6 @@ function save() {
             });
         });
         inArgs.push(buildArgument("_buttons", "buttons", buttons));
-        //inArgs.push({ "buttons": buttons }); // Backend will receive List<Map>
     }
 
     // 4. Schema Mapping (Data Binding)
