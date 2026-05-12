@@ -264,8 +264,6 @@ function setupStep2UI() {
         $('#group-push-am-template').removeClass('hidden');
         $('#group-push-en-title').removeClass('hidden');
         $('#group-push-en-template').removeClass('hidden');
-        $('#group-images').removeClass('hidden');
-        $('#group-buttons').removeClass('hidden');
     }
 
     validateStep2();
