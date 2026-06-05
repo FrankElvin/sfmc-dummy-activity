@@ -271,6 +271,10 @@ function setupStep2UI() {
 
 function addImageRow(value) {
     var $container = $('#image-list-container');
+    if ($container.children().length >= 1) {
+        alert("Maximum 1 image allowed.");
+        return;
+    }
     var id = Date.now();
 
     var html = `
@@ -302,8 +306,8 @@ window.removeItem = function(selector) {
 
 function addButtonRow(data) {
     var $container = $('#button-list-container');
-    if ($container.children().length >= 2) {
-        alert("Maximum 2 buttons allowed.");
+    if ($container.children().length >= 1) {
+        alert("Maximum 1 button allowed.");
         return;
     }
 
