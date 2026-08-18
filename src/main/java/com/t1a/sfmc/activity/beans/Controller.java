@@ -97,9 +97,11 @@ public class Controller {
     }
 
     @PostMapping("/publish")
-    public Map<String, String> publish(@RequestBody String payload,
+    public Map<String, String> publish(@RequestBody Map<String, Object> payload,
                                        @RequestHeader Map<String, String> headers) {
-        log.info(">>> PUBLISH REQUEST: {} (string)", payload);
+        log.info(">>> PUBLISH REQUEST: {}", payload);
+        Integer journeyVersion = Integer.parseInt((String) payload.get("interactionVersion"));
+        log.info("Integer version: {}", journeyVersion);
         logHeaders(headers);
         return Map.of("status", "ok");
     }
