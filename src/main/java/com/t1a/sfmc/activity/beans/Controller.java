@@ -97,9 +97,9 @@ public class Controller {
     }
 
     @PostMapping("/publish")
-    public Map<String, String> publish(@RequestBody Map<String, Object> payload,
+    public Map<String, String> publish(@RequestBody String payload,
                                        @RequestHeader Map<String, String> headers) {
-        log.info(">>> PUBLISH REQUEST: {}", payload);
+        log.info(">>> PUBLISH REQUEST: {} (string)", payload);
         logHeaders(headers);
         return Map.of("status", "ok");
     }
