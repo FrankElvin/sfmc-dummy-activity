@@ -1,7 +1,7 @@
 package com.t1a.sfmc.activity.beans;
 
 import com.t1a.sfmc.activity.config.UrlConfig;
-import com.t1a.sfmc.activity.model.sfmc.SfmcJourneyPayload;
+import com.t1a.sfmc.activity.model.exception.MyHardException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -66,8 +66,10 @@ public class Controller {
     public Map<String, String> execute(@RequestBody String payload, @RequestHeader Map<String, String> headers) {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Payload: {}", payload);
-        logHeaders(headers);
-        return Map.of("status", "ok");
+//        logHeaders(headers);
+        throw new MyHardException("My hard exception");
+
+//        return Map.of("status", "ok");
     }
 
     @PostMapping("/execute-debug")
