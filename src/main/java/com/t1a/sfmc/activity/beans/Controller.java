@@ -2,6 +2,7 @@ package com.t1a.sfmc.activity.beans;
 
 import com.t1a.sfmc.activity.config.UrlConfig;
 import com.t1a.sfmc.activity.model.exception.MyHardException;
+import com.t1a.sfmc.activity.model.exception.MySoftException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +68,8 @@ public class Controller {
         log.info(">>> EXECUTE REQUEST RECEIVED");
         log.info("Payload: {}", payload);
 //        logHeaders(headers);
-        throw new MyHardException("My hard exception");
+//        throw new MyHardException("My hard exception");
+        throw new MySoftException("My soft exception");
 
 //        return Map.of("status", "ok");
     }
