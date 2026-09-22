@@ -3,6 +3,7 @@ var payload = {};
 var schemaFields = [];
 var journeyMeta = {};
 var mobileNumberBinding = ""; // {{Event.xxx."fieldName"}} expression from journey defaults
+var activityName = ""; // Name assigned to this activity instance on the journey canvas
 
 // State Tracking
 var currentStep = 1;
@@ -35,6 +36,8 @@ connection.on('requestedInteraction', function(interaction) {
 
 connection.on('initActivity', function(data) {
     if (data) payload = data;
+    activityName = (payload.name || "").trim();
+    validateActivityName();
 
     // Parse existing configuration
     var inArgs = [];
@@ -144,9 +147,16 @@ function goToStep(step) {
     connection.trigger('ready');
 }
 
+function validateActivityName() {
+    var ok = activityName !== "";
+    $('#activity-name-error').toggleClass('hidden', ok);
+    return ok;
+}
+
 function validateStep1() {
+    var nameOk = validateActivityName();
     var val = $('#channel-select').val();
-    connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: !!val });
+    connection.trigger('updateButton', { button: 'next', text: 'next', visible: true, enabled: nameOk && !!val });
     connection.trigger('updateButton', { button: 'back', visible: false });
 }
 
@@ -191,6 +201,7 @@ function validateTemplate(textareaId, errorId) {
 }
 
 function validateStep2() {
+    var nameOk = validateActivityName();
     var needsPhone = (selectedChannel === 'sms' || selectedChannel === 'viber_sms');
     var phoneOk = !needsPhone || !!mobileNumberBinding;
 
@@ -231,7 +242,7 @@ function validateStep2() {
     var pushEnTitleOk = selectedChannel !== 'push' || validateTemplate('#msg-title-en', '#msg-title-en-error');
     var pushEnOk = selectedChannel !== 'push' || validateTemplate('#msg-template-en', '#msg-template-en-error');
 
-    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: phoneOk && templateOk && viberOk && pushAmTitleOk && pushAmOk && pushEnTitleOk && pushEnOk });
+    connection.trigger('updateButton', { button: 'next', text: 'done', visible: true, enabled: nameOk && phoneOk && templateOk && viberOk && pushAmTitleOk && pushAmOk && pushEnTitleOk && pushEnOk });
 }
 
 function setupStep2UI() {
