@@ -12,3 +12,12 @@ app:
       enabled: "${SFMC_OAUTH_ENABLED}"
       # SFMC security context key where the oauth token endpoint is defined
       contextKey: "${SFMC_OAUTH_CONTEXT_KEY}"
+
+sfmc:
+  enabled: "${SFMC_CONNECTION_ENABLED}"
+  connection:
+    subdomain: "${SFMC_SUBDOMAIN}"
+    clientId: "${SFMC_CLIENT_ID}"
+    clientSecret: "${SFMC_CLIENT_SECRET}"
+  soap:
+    logging: "false"

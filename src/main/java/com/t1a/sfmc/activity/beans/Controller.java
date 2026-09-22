@@ -1,10 +1,16 @@
 package com.t1a.sfmc.activity.beans;
 
+import com.t1a.sfmc.activity.beans.sfmc.model.activity.ActivityPublishRequestData;
+import com.t1a.sfmc.activity.beans.sfmc.model.activity.ActivityValidateRequestData;
+import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.Activity;
+import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.SfmcJourneyDetails;
+import com.t1a.sfmc.activity.beans.sfmc.service.SfmcService;
 import com.t1a.sfmc.activity.config.UrlConfig;
 import com.t1a.sfmc.activity.model.exception.MyHardException;
 import com.t1a.sfmc.activity.model.exception.MySoftException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,6 +24,7 @@ import java.util.Map;
 public class Controller {
 
     private Service service;
+    private SfmcService sfmcService;
     private UrlConfig urlConfig;
 
     private void logHeaders(Map<String, String> headers) {
@@ -101,20 +108,29 @@ public class Controller {
     }
 
     @PostMapping("/publish")
-    public Map<String, String> publish(@RequestBody Map<String, Object> payload,
-                                       @RequestHeader Map<String, String> headers) {
+        public Map<String, String> publish(@RequestBody ActivityPublishRequestData payload) {
         log.info(">>> PUBLISH REQUEST: {}", payload);
-        Integer journeyVersion = Integer.parseInt((String) payload.get("interactionVersion"));
-        log.info("Integer version: {}", journeyVersion);
-        logHeaders(headers);
         return Map.of("status", "ok");
     }
 
     @PostMapping("/validate")
-    public Map<String, String> validate(@RequestBody Map<String, Object> payload,
-                                        @RequestHeader Map<String, String> headers) {
+    public Map<String, String> validate(@RequestBody ActivityValidateRequestData payload) {
         log.info(">>> VALIDATE REQUEST: {}", payload);
-        logHeaders(headers);
+        SfmcJourneyDetails journeyDetails = sfmcService.loadJourneyDetails(payload.getOriginalDefinitionId(), payload.getInteractionVersion());
+        if (journeyDetails == null) {
+            log.warn("Got null journey details: considering it a disabled sfmcService. Returning success");
+            return Map.of("status", "ok");
+        }
+
+        String activityId = payload.getActivityObjectID().toString();
+        Activity activity = journeyDetails.getActivities().stream()
+                .filter(a -> activityId.equalsIgnoreCase(a.getId()))
+                .findFirst()
+                .orElseThrow(() -> new MyHardException("Activity not found in journey definition"));
+
+        if (activity.getName() == null || activity.getName().isBlank()) {
+            throw new MyHardException("Activity name is required");
+        }
         return Map.of("status", "ok");
     }
 
