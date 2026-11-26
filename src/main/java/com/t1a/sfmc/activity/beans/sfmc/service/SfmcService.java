@@ -12,4 +12,7 @@ public interface SfmcService {
     JsonNode getEventDefinition(String eventDefinitionKey, String token);
 
     JsonNode getDeSample(String deKey, int sampleSize, String token);
+
+    String getDECustomerKey(String deName);
+
 }

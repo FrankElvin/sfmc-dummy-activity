@@ -44,4 +44,10 @@ public class DummySfmcService implements SfmcService {
         return null;
     }
 
+    @Override
+    public String getDECustomerKey(String deName) {
+        logWarnUnimplemented();
+        return null;
+    }
+
 }

@@ -148,7 +148,8 @@ public class Controller {
         String deId = eventDefKey.path("dataExtensionId").asText();
         String deName = eventDefKey.path("dataExtensionName").asText();
         log.info("Input DE name found: {}", deName);
-        JsonNode dataSample = sfmcService.getDeSample(deId, 100, payload.getToken());
+        String deKey = sfmcService.getDECustomerKey(deName);
+        JsonNode dataSample = sfmcService.getDeSample(deKey, 100, payload.getToken());
         log.info("Got input data sample: {}", dataSample);
         return Map.of("status", "ok");
     }
