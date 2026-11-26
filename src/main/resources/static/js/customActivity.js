@@ -3,6 +3,9 @@ var payload = {};
 var schemaFields = [];
 var journeyMeta = {};
 var mobileNumberBinding = ""; // {{Event.xxx."fieldName"}} expression from journey defaults
+var tokens = {};
+var endpoints = {};
+var sampleRequested = false;
 var activityName = ""; // Name assigned to this activity instance on the journey canvas
 
 // State Tracking
@@ -16,6 +19,17 @@ connection.on('requestedSchema', function(data) {
     if (data.schema) schemaFields = data.schema;
     renderFields(schemaFields);
     if (currentStep === 2) validateStep2();
+    callSample();
+});
+
+connection.on('requestedTokens', function(data) {
+    tokens = data || {};
+    callSample();
+});
+
+connection.on('requestedEndpoints', function(data) {
+    endpoints = data || {};
+    callSample();
 });
 
 connection.on('requestedInteraction', function(interaction) {
@@ -111,6 +125,38 @@ connection.on('clickedBack', function() {
 });
 
 // --- FUNCTIONS ---
+
+// Event.DEAudience-<eventDefinitionKey>.<column>
+function getEventDefinitionKey() {
+    for (var i = 0; i < schemaFields.length; i++) {
+        var m = /^Event\.([^.]+)\./.exec(schemaFields[i].key || '');
+        if (m) return m[1];
+    }
+    return undefined;
+}
+
+// Runs once schema, token and endpoints have all arrived, in whatever order
+function callSample() {
+    var restHost = endpoints.fuelapiRestHost || endpoints.restHost;
+    var eventDefinitionKey = getEventDefinitionKey();
+    if (sampleRequested || !tokens.fuel2token || !restHost || !eventDefinitionKey) return;
+    sampleRequested = true;
+
+    fetch('backend/sample', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            eventDefinitionKey: eventDefinitionKey,
+            token: tokens.fuel2token,
+            restHost: restHost
+        })
+    }).then(function(r) {
+        console.log('/backend/sample status:', r.status);
+    }).catch(function(err) {
+        sampleRequested = false;
+        console.error('/backend/sample failed', err);
+    });
+}
 
 function buildArgument(key, type, value) {
     var result = {

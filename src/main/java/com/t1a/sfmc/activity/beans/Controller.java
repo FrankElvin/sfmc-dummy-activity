@@ -6,11 +6,11 @@ import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.Activity;
 import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.SfmcJourneyDetails;
 import com.t1a.sfmc.activity.beans.sfmc.service.SfmcService;
 import com.t1a.sfmc.activity.config.UrlConfig;
+import com.t1a.sfmc.activity.model.SampleRequest;
 import com.t1a.sfmc.activity.model.exception.MyHardException;
 import com.t1a.sfmc.activity.model.exception.MySoftException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -131,6 +131,12 @@ public class Controller {
         if (activity.getName() == null || activity.getName().isBlank()) {
             throw new MyHardException("Activity name is required");
         }
+        return Map.of("status", "ok");
+    }
+
+    @PostMapping("/backend/sample")
+    public Map<String, String> sample(@RequestBody SampleRequest payload) {
+        log.info(">>> SAMPLE REQUEST: {}", payload);
         return Map.of("status", "ok");
     }
 
