@@ -1,5 +1,6 @@
 package com.t1a.sfmc.activity.beans.sfmc.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.t1a.sfmc.activity.beans.sfmc.SfmcClient;
 import com.t1a.sfmc.activity.beans.sfmc.SfmcConnectionConfig;
 import com.t1a.sfmc.activity.beans.sfmc.model.activity.ActivityPublishRequestData;
@@ -127,8 +128,13 @@ public class ActualSfmcService implements SfmcService {
     }
 
     @Override
-    public String getEventDefinition(String eventDefinitionKey, String token) {
-        return client.restGet("/interaction/v1/eventDefinitions/key:" + eventDefinitionKey, String.class, token);
+    public JsonNode getEventDefinition(String eventDefinitionKey, String token) {
+        return client.restGet("/interaction/v1/eventDefinitions/key:" + eventDefinitionKey, JsonNode.class, token);
+    }
+
+    @Override
+    public JsonNode getDeSample(String deKey, int sampleSize, String token) {
+        return client.restGet("/data/v1/customobjectdata/key/" + deKey + "/rowset?$pageSize=" + sampleSize, JsonNode.class, token);
     }
 
     public UpdateResponse pushDataToDe(UpdateRequest request) {

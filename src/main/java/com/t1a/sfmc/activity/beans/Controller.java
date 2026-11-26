@@ -1,5 +1,6 @@
 package com.t1a.sfmc.activity.beans;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.t1a.sfmc.activity.beans.sfmc.model.activity.ActivityPublishRequestData;
 import com.t1a.sfmc.activity.beans.sfmc.model.activity.ActivityValidateRequestData;
 import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.Activity;
@@ -138,8 +139,17 @@ public class Controller {
     public Map<String, String> sample(@RequestBody SampleRequest payload) {
         log.info(">>> SAMPLE REQUEST: {}", payload);
         service.checkFrontendPayload(payload);
-        String eventDefKey = sfmcService.getEventDefinition(payload.getEventDefinitionKey(), payload.getToken());
-        log.info("Event definition key: {}", eventDefKey);
+        JsonNode eventDefKey = sfmcService.getEventDefinition(payload.getEventDefinitionKey(), payload.getToken());
+        log.info("Got event def key: {}", eventDefKey);
+        String eventType = eventDefKey.path("category").asText();
+        if (!eventType.equals("Audience")) {
+            throw new RuntimeException("Journey got invalid input object for this node");
+        }
+        String deId = eventDefKey.path("dataExtensionId").asText();
+        String deName = eventDefKey.path("dataExtensionName").asText();
+        log.info("Input DE name found: {}", deName);
+        JsonNode dataSample = sfmcService.getDeSample(deId, 100, payload.getToken());
+        log.info("Got input data sample: {}", dataSample);
         return Map.of("status", "ok");
     }
 
