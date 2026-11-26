@@ -7,16 +7,17 @@ import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.Activity;
 import com.t1a.sfmc.activity.beans.sfmc.model.rest.journey.SfmcJourneyDetails;
 import com.t1a.sfmc.activity.beans.sfmc.service.SfmcService;
 import com.t1a.sfmc.activity.config.UrlConfig;
+import com.t1a.sfmc.activity.sampling.Discover;
 import com.t1a.sfmc.activity.model.SampleRequest;
 import com.t1a.sfmc.activity.model.exception.MyHardException;
 import com.t1a.sfmc.activity.model.exception.MySoftException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -136,7 +137,7 @@ public class Controller {
     }
 
     @PostMapping("/backend/sample")
-    public Map<String, String> sample(@RequestBody SampleRequest payload) {
+    public ResponseEntity<Object> sample(@RequestBody SampleRequest payload) {
         log.info(">>> SAMPLE REQUEST: {}", payload);
         service.checkFrontendPayload(payload);
         JsonNode eventDefKey = sfmcService.getEventDefinition(payload.getEventDefinitionKey(), payload.getToken());
@@ -151,7 +152,37 @@ public class Controller {
         String deKey = sfmcService.getDECustomerKey(deName);
         JsonNode dataSample = sfmcService.getDeSample(deKey, 100, payload.getToken());
         log.info("Got input data sample: {}", dataSample);
-        return Map.of("status", "ok");
+        List<JsonNode> rows = toList(dataSample.path("items"));
+        List<Map<String, JsonNode>> flat = new ArrayList<>();
+        for (JsonNode r : rows) flat.add(merged(r));
+
+        List<Discover.Column> columns = Discover.discoverColumns(flat);
+        log.info("route=sample eventDefinitionKey={} rows={} jsonColumns={}", eventDefKey, rows.size(),
+                columns.stream().map(Discover.Column::column).toList());
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("rows", rows.size());
+        out.put("columns", columns.stream().map(Discover.Column::toMap).toList());
+        return ResponseEntity.ok(out);
+    }
+
+    private static List<JsonNode> toList(JsonNode arr) {
+        List<JsonNode> l = new ArrayList<>();
+        if (arr != null && arr.isArray()) arr.forEach(l::add);
+        return l;
+    }
+
+    private static Map<String, JsonNode> merged(JsonNode r) {
+        Map<String, JsonNode> m = new LinkedHashMap<>();
+        if (r == null || !r.isObject()) return m;
+        if (r.has("values") || r.has("keys")) {
+            for (String part : List.of("keys", "values")) {
+                JsonNode p = r.get(part);
+                if (p != null && p.isObject()) for (Iterator<String> it = p.fieldNames(); it.hasNext(); ) { String k = it.next(); m.put(k, p.get(k)); }
+            }
+        } else {
+            for (Iterator<String> it = r.fieldNames(); it.hasNext(); ) { String k = it.next(); m.put(k, r.get(k)); }
+        }
+        return m;
     }
 
     @PostMapping("/stop")
