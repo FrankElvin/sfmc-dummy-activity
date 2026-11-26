@@ -137,6 +137,9 @@ public class Controller {
     @PostMapping("/backend/sample")
     public Map<String, String> sample(@RequestBody SampleRequest payload) {
         log.info(">>> SAMPLE REQUEST: {}", payload);
+        service.checkFrontendPayload(payload);
+        String eventDefKey = sfmcService.getEventDefinition(payload.getEventDefinitionKey(), payload.getToken());
+        log.info("Event definition key: {}", eventDefKey);
         return Map.of("status", "ok");
     }
 

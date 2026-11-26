@@ -126,6 +126,11 @@ public class ActualSfmcService implements SfmcService {
         return result.getCustomerKey();
     }
 
+    @Override
+    public String getEventDefinition(String eventDefinitionKey, String token) {
+        return client.restGet("/interaction/v1/eventDefinitions/key:" + eventDefinitionKey, String.class, token);
+    }
+
     public UpdateResponse pushDataToDe(UpdateRequest request) {
         log.info("Pushing data to DE: {} records", request.getObjects().size());
         return client.update(request, this.sfmcToken.get());

@@ -7,4 +7,6 @@ import java.util.UUID;
 public interface SfmcService {
 
     SfmcJourneyDetails loadJourneyDetails(UUID definitionId, Integer interactionVersion);
+
+    String getEventDefinition(String eventDefinitionKey, String token);
 }

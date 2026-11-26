@@ -1,6 +1,7 @@
 package com.t1a.sfmc.activity.beans;
 
 import com.t1a.sfmc.activity.config.OauthConfig;
+import com.t1a.sfmc.activity.model.SampleRequest;
 import com.t1a.sfmc.activity.model.sfmc.JourneyArgument;
 import com.t1a.sfmc.activity.model.sfmc.SfmcJourneyPayload;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -17,7 +19,8 @@ import java.util.Map;
 public class Service {
 
     private OauthConfig oauthConfig;
-    final String TEMPLATE_MESSAGE_FIELD = "messageTemplate";
+    private final String TEMPLATE_MESSAGE_FIELD = "messageTemplate";
+    private final Pattern REST_HOST = Pattern.compile("^https://[\\w.-]+\\.marketingcloudapis\\.com/?$");
 
     private void addSecurityOptions(Map<String, Object> config) {
         if (!oauthConfig.isEnabled()) {
@@ -72,5 +75,16 @@ public class Service {
         log.info("Personalization result: {}", processedMessage);
         return processedMessage;
 
+    }
+
+    public void checkFrontendPayload(SampleRequest request) {
+        boolean ownTenant = request.getRestHost() != null && REST_HOST.matcher(request.getRestHost()).matches();
+        if (!ownTenant) {
+            throw new IllegalArgumentException("Wrong restHost");
+        }
+        boolean badToken = request.getToken() == null || request.getToken().isEmpty();
+        if (badToken) {
+            throw new IllegalArgumentException("Missing token");
+        }
     }
 }

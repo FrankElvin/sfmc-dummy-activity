@@ -26,7 +26,7 @@ public class SfmcClientConifg {
 
     @Bean
     public SfmcClient sfmcClient(Jaxb2Marshaller marshaller) {
-        SfmcClient sfmcClient = new SfmcClient();
+        SfmcClient sfmcClient = new SfmcClient(config);
         log.info("Initializing sfmc soap client with url: {}", "https://" + config.getSubdomain() + ".soap.marketingcloudapis.com/Service.asmx");
         sfmcClient.setDefaultUri("https://" + config.getSubdomain() + ".soap.marketingcloudapis.com/Service.asmx");
         sfmcClient.setMarshaller(marshaller);

@@ -18,12 +18,23 @@ public class DummySfmcService implements SfmcService {
 
     @PostConstruct
     private void postConstruct() {
-        log.warn("SFMC service is disabled by configuration. Adding a dummy one to the context");
+        logWarnUnimplemented();
+    }
+
+    private void logWarnUnimplemented() {
+        log.warn("SFMC service is disabled by configuration");
     }
 
     @Override
     public SfmcJourneyDetails loadJourneyDetails(UUID definitionId, Integer interactionVersion) {
-        log.warn("Loading journey details but the SFMC service is disabled");
+        logWarnUnimplemented();
         return null;
     }
+
+    @Override
+    public String getEventDefinition(String eventDefinitionKey, String token) {
+        logWarnUnimplemented();
+        return null;
+    }
+
 }
